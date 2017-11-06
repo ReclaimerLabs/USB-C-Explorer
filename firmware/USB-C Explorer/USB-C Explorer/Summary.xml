@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+                                             <?xml-stylesheet type='text/xsl' href='Summary.xslt'?><SUMMARY>
+  <DeviceInformation>
+    <DeviceName>ATSAMD21E17A</DeviceName>
+    <DeviceVariant>32</DeviceVariant>
+    <Technology>Self Capacitance</Technology>
+  </DeviceInformation>
+  <SensorInformation TotalSensors="1">
+    <NumberOfButtons>0</NumberOfButtons>
+    <NumberOfWheels>0</NumberOfWheels>
+    <NumberOfSliders>1</NumberOfSliders>
+  </SensorInformation>
+  <ChannelInformation>
+    <TotalChannelsConsumed>3</TotalChannelsConsumed>
+  </ChannelInformation>
+  <ChannelInformationDetailed>
+    <Channel No="0" SeriesResistor="Zero" Prescalar="One" AutoOS="Disable" FilterLevel="16" />
+    <Channel No="1" SeriesResistor="Zero" Prescalar="One" AutoOS="Disable" FilterLevel="16" />
+    <Channel No="2" SeriesResistor="Zero" Prescalar="One" AutoOS="Disable" FilterLevel="16" />
+  </ChannelInformationDetailed>
+  <PinConfiguration>
+    <AvailablePorts>A</AvailablePorts>
+    <TotalPinsUsed>4</TotalPinsUsed>
+    <Sensors>
+      <Sensor Name="Slider0" ChannelNumber="1" SensingPair="Y0" PortPin="PA2" />
+      <Sensor Name="Slider0" ChannelNumber="2" SensingPair="Y1" PortPin="PA3" />
+      <Sensor Name="Slider0" ChannelNumber="3" SensingPair="Y2" PortPin="PA4" />
+    </Sensors>
+  </PinConfiguration>
+  <LibraryInformation ToolChainName="GCC">
+    <DefaultLibrary>libsamd21_qtouch_gcc.a</DefaultLibrary>
+  </LibraryInformation>
+  <MoistureGrouping IsEnabled="false" />
+  <SensorMoistureGroupDetail IsEnabled="false" />
+  <MemoryInformation>
+    <DataMemory>
+      <TotalDataMemory>16384</TotalDataMemory>
+      <DataMemoryUsed>845</DataMemoryUsed>
+      <DataMemoryFree>15539</DataMemoryFree>
+    </DataMemory>
+    <CodeMemory>
+      <TotalCodeMemory>131072</TotalCodeMemory>
+      <CodeMemoryUsed>10506</CodeMemoryUsed>
+      <CodeMemoryFree>120566</CodeMemoryFree>
+    </CodeMemory>
+  </MemoryInformation>
+  <ComponentID>qtlib.generic.tmx.qt.at91samd.device</ComponentID>
+  <OtherOptions>
+    <SensorPostProcessingMode>TOUCH_LIBRARY_DRIVEN</SensorPostProcessingMode>
+    <AutoTuning>NONE</AutoTuning>
+    <FilterLevel>Four</FilterLevel>
+    <AutoOS>Zero</AutoOS>
+    <FrequencyMode>NONE</FrequencyMode>
+    <PreScalar>One</PreScalar>
+    <SeriesResistor>Zero</SeriesResistor>
+    <FrequencyHops>One,Two,Three</FrequencyHops>
+    <FrequencyAutoTuneEnabled>Off</FrequencyAutoTuneEnabled>
+    <FrequencyAutoTuneSignalLimit>10</FrequencyAutoTuneSignalLimit>
+    <FrequencyAutoTuneInCount>12</FrequencyAutoTuneInCount>
+    <NoiseMeasurementStatus>Off</NoiseMeasurementStatus>
+    <NoiseMeasurementSignalStabilityLimit>10</NoiseMeasurementSignalStabilityLimit>
+    <NoiseMeasurementNoiseLimit>12</NoiseMeasurementNoiseLimit>
+    <NoiseMeasurementNoiseBufferCount>Five</NoiseMeasurementNoiseBufferCount>
+    <LockoutStatus>SingleKeyLockout</LockoutStatus>
+    <LockoutCountdown>10</LockoutCountdown>
+    <PTCInterruptprioritylevel>Three</PTCInterruptprioritylevel>
+  </OtherOptions>
+</SUMMARY>

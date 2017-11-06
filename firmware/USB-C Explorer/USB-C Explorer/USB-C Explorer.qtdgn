@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Kit projectId="2" projectName="default" projectType="PTC" Technology="QTouch" DeviceVariant="32" QTouchDesignVersion="1.0" QTouchLibraryVersion="5.9.0.211">
+  <KitLayout>
+    <KitSize width="150" height="120" kitPanelThickness="0.1" kitImage="" />
+    <Slider id="0" name="Slider0" width="19" height="6" positionX="0" positionY="96" fromChannel="0" toChannel="2" orientation="1" direction="0" SensorDesignType="Small" GapThickness="0.3" />
+  </KitLayout>
+  <TechnologySelectionOptions MoistureTolerant="false" NoiseImmune="false" />
+  <GlobalConfiguration recalibrationThreshold="0" detectIntegrationLimit="4" driftHoldTime="20" sensorMaximumDuration="0" negativeDriftRate="20" positiveDriftRate="5" libraryTimingSetting="0" measurementPeriod="20" positiveRecalibrationDelay="10" ticksPerMilliSec="1000" />
+  <OtherOprtions filterLevel="Four" autoOS="Zero" noiseCounter="0" FrequencyMode="NONE" FrequencyHop1="One" FrequencyHop2="Two" FrequencyHop3="Three" FrequencyAutoTuningStatus="Off" CsdValue="0" AutoOsSignalStabilityLimit="20" FrequencyAutoTuningSignalStabilityLimit="10" FrequencyAutoTuningCount="12" NoiseMeasurementStatus="Off" NoiseMeasurementSignalStabilityLimit="10" NoiseMeasurementNoiseLimit="12" NoiseMeasurementBufferCount="Five" LockoutStatus="SingleKeyLockout" LockoutCountdown="10" PtcInterruptPriorityLevel="Three" QuickReburstStatus="On" MoistureQuickReburstStatus="On" AksGroupStatus="Off" GpioStatus="PULLHIGH_WHEN_NOT_MEASURED" SensorPostProcessingMode="TOUCH_LIBRARY_DRIVEN" delayCycle="1" powerOptimization="0" />
+  <SensorConfigurations autoAssign="true">
+    <SensorConfiguration sensorType="3" fromChannel="0" toChannel="2" aksGroup="0" detectThreshold="10" detectHysteresis="1" positiveRecalibrationFlag="0" positionAngleResolution="7" positionAngleHysteresis="0" LumpSensorGroup="0" MoisGroup="0" MltchGroup="0" />
+  </SensorConfigurations>
+  <PinConfiguration useDefaultPinConfiguration="True">
+    <PairSense>
+      <Sensor Name="Slider0" Type="Slider" Index="0" NumberOfChannels="3">
+        <SensingPair Name="Y0" PortPin="PA2" GainSettings="Gain0" />
+        <SensingPair Name="Y1" PortPin="PA3" GainSettings="Gain0" />
+        <SensingPair Name="Y2" PortPin="PA4" GainSettings="Gain0" />
+      </Sensor>
+    </PairSense>
+  </PinConfiguration>
+  <BSWChannelProperties AutoTuning="NONE" SeriesResistorValue="Zero" PreScalarValue="One">
+    <Channel Index="0" PreScalarValue="One" SeriesResistorValue="Zero" CcPreScalarValue="One" CcSeriesResistorValue="Zero" AutoOs="Zero" FilterLevel="Four" Gain="Gain0" />
+    <Channel Index="1" PreScalarValue="One" SeriesResistorValue="Zero" CcPreScalarValue="One" CcSeriesResistorValue="Zero" AutoOs="Zero" FilterLevel="Four" Gain="Gain0" />
+    <Channel Index="2" PreScalarValue="One" SeriesResistorValue="Zero" CcPreScalarValue="One" CcSeriesResistorValue="Zero" AutoOs="Zero" FilterLevel="Four" Gain="Gain0" />
+  </BSWChannelProperties>
+</Kit>

@@ -1,0 +1,30 @@
+Output: ODB++ Files
+Type  : ODB
+From  : Variant [[No Variations]] of PCB Document [USB-C_Explorer.PcbDoc]
+   Generated File[matrix]
+   Generated File[profile]
+   Generated File[stephdr]
+   Generated File[features]
+   Generated File[features]
+   Generated File[features]
+   Generated File[features]
+   Generated File[features]
+   Generated File[features]
+   Generated File[features]
+   Generated File[features]
+   Generated File[features]
+   Generated File[tools]
+   Generated File[features]
+   Generated File[features]
+   Generated File[components]
+   Generated File[features]
+   Generated File[components]
+   Generated File[data]
+   Generated File[netlist]
+   Generated File[USB-C_Explorer_Rev_2.REP]
+
+
+Files Generated   : 21
+Documents Printed : 0
+
+Finished Output Generation At 23:12:24 On 10/22/2017

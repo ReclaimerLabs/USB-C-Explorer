@@ -17,6 +17,17 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Datasheets
+documentation/datasheets/*
+
+# Altium Files
+electrical/History/*
+electrical/Project Logs for USB-C Explorer/*
+electrical/__Previews/*
+
+# Unncessary Firmware
+firmware/USB-C Explorer/USB-C Explorer/Debug/*
+
 # =========================
 # Operating System Files
 # =========================
