@@ -207,6 +207,9 @@ enum fusb302_txfifo_tokens {
     fusb302_TKN_TXOFF = 0xFE,
 };
 
+extern const struct tcpm_drv fusb302_tcpm_drv;
+
+/*
 // Common methods for TCPM implementations
 int     fusb302_init(void);
 int     fusb302_get_cc(int *cc1, int *cc2);
@@ -221,7 +224,7 @@ int     fusb302_get_message(uint32_t *payload, int *head);
 int     fusb302_transmit(enum tcpm_transmit_type type,
                 uint16_t header, const uint32_t *data);
 //int   alert(void);
-void    fusb302_pd_reset(void);
+void    fusb302_pd_reset(int port);
 void    fusb302_auto_goodcrc_enable(int enable);
 int     fusb302_convert_bc_lvl(int bc_lvl);
 void    fusb302_detect_cc_pin_source_manual(int *cc1_lvl, int *cc2_lvl);
@@ -229,8 +232,8 @@ int     fusb302_measure_cc_pin_source(int cc_measure);
 void    fusb302_detect_cc_pin_sink(int *cc1, int *cc2);
 int     fusb302_send_message(uint16_t header, const uint32_t *data,
                 uint8_t *buf, int buf_pos);
-void    fusb302_flush_rx_fifo(void);
-void    fusb302_flush_tx_fifo(void);
+void    fusb302_flush_rx_fifo(int port);
+void    fusb302_flush_tx_fifo(int port);
 void    fusb302_clear_int_pin(void);
 void    fusb302_set_bist_test_data(void);
 int     fusb302_get_chip_id(int *id);
@@ -240,6 +243,7 @@ int     fusb302_tcpc_read(int reg, int *val);
 int     fusb302_tcpc_xfer(const uint8_t *out, 
             int out_size, uint8_t *in, 
             int in_size, int flags);
+*/
 
 #endif /* fusb302_H */
 

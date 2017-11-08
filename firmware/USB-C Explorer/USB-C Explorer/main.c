@@ -53,6 +53,7 @@
  */
 #include <asf.h>
 #include "ugui.h"
+#include "tcpm.h"
 
 /**
  * Device Revision definition
@@ -66,6 +67,10 @@
 struct rtc_module rtc_instance;
 struct i2c_master_module i2c_master_instance;
 uint32_t device_rev = 0;
+
+const struct tcpc_config_t tcpc_config[CONFIG_USB_PD_PORT_COUNT] = {
+	{&i2c_master_instance, fusb302_I2C_SLAVE_ADDR, &fusb302_tcpm_drv},
+};
 
 uint8_t display_buffer[DISP_MEM_SIZE];
 UG_GUI gui;
@@ -171,7 +176,7 @@ void set_timer_period(void )
 }
 
 void display_init(void);
-int display_set_pixel(UG_S16 x, UG_S16 y, UG_COLOR color);
+void display_set_pixel(UG_S16 x, UG_S16 y, UG_COLOR color);
 void i2c_init(void);
 
 /*! \brief Main function
@@ -194,6 +199,12 @@ int main(void)
 
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
+	
+	int cc1, cc2;
+	cc1 = 0;
+	cc2 = 0;
+	tcpm_init(0);
+	tcpm_get_cc(0, &cc1, &cc2);
 
 	while (1) {
 		system_sleep();
@@ -275,11 +286,11 @@ void display_init(void)
 	ssd1306_write_data_n(display_buffer, DISP_MEM_SIZE);
 }
 
-int display_set_pixel(UG_S16 x, UG_S16 y, UG_COLOR color)
+void display_set_pixel(UG_S16 x, UG_S16 y, UG_COLOR color)
 {
 	if ((x >= DISP_SIZE_X) || (y >= DISP_SIZE_Y) || (x < 0) || (y < 0))
 	{
-		return -1; // error
+		return; // error
 	}
 	
 	if (color)
@@ -298,8 +309,25 @@ void i2c_init(void)
 	i2c_master_get_config_defaults(&config_i2c_master);
 	config_i2c_master.buffer_timeout = 10000;
 	config_i2c_master.baud_rate = I2C_MASTER_BAUD_RATE_400KHZ;
-	i2c_master_init(&i2c_master_instance, I2C_MODULE,&config_i2c_master);
+	config_i2c_master.pinmux_pad0 = I2C_SDA_PINMUX;
+	config_i2c_master.pinmux_pad1 = I2C_SCL_PINMUX;
+	i2c_master_init(&i2c_master_instance, I2C_MODULE, &config_i2c_master);
 	i2c_master_enable(&i2c_master_instance);
+	
+	uint8_t data[2];
+	data[0] = 0x01;
+	data[0] = 0x02;
+	struct i2c_master_packet packet;
+	packet.address = 0x23;
+	packet.data_length = 2;
+	packet.data = data;
+	packet.ten_bit_address = false;
+	packet.high_speed = false;
+	packet.hs_master_code = 0x00;
+	
+	return i2c_master_write_packet_wait(&i2c_master_instance, &packet);
+	
+	tcpc_write(0, 0x00, 0x1A);
 }
 
 /* I2C wrapper functions - get I2C port / slave addr from config struct. */
@@ -309,16 +337,15 @@ int tcpc_write(int port, int reg, int val)
 	data[0] = (0xFF) & reg;
 	data[1] = (0xFF) & val;
 	
-	struct i2c_master_packet packet = {
-		.address = tcpc_config[port].i2c_slave_addr,
-		.data_length = 2,
-		.data = data,
-		.ten_bit_address = false,
-		.high_speed = false,
-		.hs_master_code = 0x00,
-	};
+	struct i2c_master_packet packet;
+	packet.address = tcpc_config[port].i2c_slave_addr;
+	packet.data_length = 2;
+	packet.data = data;
+	packet.ten_bit_address = false;
+	packet.high_speed = false;
+	packet.hs_master_code = 0x00;
 	
-	return i2c_master_read_packet_wait(&i2c_master_instance, &packet);
+	return i2c_master_write_packet_wait(&i2c_master_instance, &packet);
 }
 
 int tcpc_write16(int port, int reg, int val)
@@ -328,30 +355,90 @@ int tcpc_write16(int port, int reg, int val)
 	data[1] = (0xFF) & val;
 	data[2] = (0xFF) & (val >> 8);
 	
-	struct i2c_master_packet packet = {
-		.address = tcpc_config[port].i2c_slave_addr,
-		.data_length = 3,
-		.data = data,
-		.ten_bit_address = false,
-		.high_speed = false,
-		.hs_master_code = 0x00,
-	};
+	struct i2c_master_packet packet;
+	packet.address = tcpc_config[port].i2c_slave_addr;
+	packet.data_length = 3;
+	packet.data = data;
+	packet.ten_bit_address = false;
+	packet.high_speed = false;
+	packet.hs_master_code = 0x00;
 	
-	return i2c_master_read_packet_wait(&i2c_master_instance, &packet);
+	return i2c_master_write_packet_wait(&i2c_master_instance, &packet);
 }
 
 int tcpc_read(int port, int reg, int *val)
 {
-	return i2c_read8(tcpc_config[port].i2c_host_port,
-	tcpc_config[port].i2c_slave_addr,
-	reg, val);
+	uint8_t data[1];
+	data[0] = (0xFF) & reg;
+	
+	struct i2c_master_packet packet;
+	packet.address = tcpc_config[port].i2c_slave_addr;
+	packet.data_length = 1;
+	packet.data = data;
+	packet.ten_bit_address = false;
+	packet.high_speed = false;
+	packet.hs_master_code = 0x00;
+	
+	enum status_code ret_code = i2c_master_write_packet_wait_no_stop(&i2c_master_instance, &packet);
+	if (STATUS_OK != ret_code)
+	{
+		return ret_code;
+	}
+
+	packet.address = tcpc_config[port].i2c_slave_addr;
+	packet.data_length = 1;
+	packet.data = data;
+	packet.ten_bit_address = false;
+	packet.high_speed = false;
+	packet.hs_master_code = 0x00;
+
+	ret_code = i2c_master_read_packet_wait(&i2c_master_instance, &packet);
+	if (STATUS_OK != ret_code)
+	{
+		return ret_code;
+	}
+	
+	*val = data[0];
+	
+	return STATUS_OK;
 }
 
 int tcpc_read16(int port, int reg, int *val)
 {
-	return i2c_read16(tcpc_config[port].i2c_host_port,
-	tcpc_config[port].i2c_slave_addr,
-	reg, val);
+	uint8_t data[2];
+	data[0] = (0xFF) & reg;
+	
+	struct i2c_master_packet packet;
+	packet.address = tcpc_config[port].i2c_slave_addr;
+	packet.data_length = 1;
+	packet.data = data;
+	packet.ten_bit_address = false;
+	packet.high_speed = false;
+	packet.hs_master_code = 0x00;
+	
+	enum status_code ret_code = i2c_master_write_packet_wait_no_stop(&i2c_master_instance, &packet);
+	if (STATUS_OK != ret_code)
+	{
+		return ret_code;
+	}
+
+	packet.address = tcpc_config[port].i2c_slave_addr;
+	packet.data_length = 2;
+	packet.data = data;
+	packet.ten_bit_address = false;
+	packet.high_speed = false;
+	packet.hs_master_code = 0x00;
+
+	ret_code = i2c_master_read_packet_wait(&i2c_master_instance, &packet);
+	if (STATUS_OK != ret_code)
+	{
+		return ret_code;
+	}
+	
+	*val  = data[0];
+	*val |= (data[1] << 8);
+	
+	return STATUS_OK;
 }
 
 int tcpc_xfer(int port,
@@ -359,9 +446,49 @@ int tcpc_xfer(int port,
 	uint8_t *in, int in_size,
 	int flags)
 {
-	return i2c_xfer(tcpc_config[port].i2c_host_port,
-	tcpc_config[port].i2c_slave_addr,
-	out, out_size,
-	in, in_size,
-	flags);
+	struct i2c_master_packet packet;
+	packet.address = tcpc_config[port].i2c_slave_addr;
+	packet.data_length = out_size;
+	packet.data = out;
+	packet.ten_bit_address = false;
+	packet.high_speed = false;
+	packet.hs_master_code = 0x00;
+
+	enum status_code ret_code;
+	if ((out_size != 0) && (in_size != 0))
+	{
+		ret_code = i2c_master_write_packet_wait_no_stop(&i2c_master_instance, &packet);
+	}
+	else if (out_size != 0)
+	{
+		ret_code = i2c_master_write_packet_wait(&i2c_master_instance, &packet);
+	}
+		
+	if (STATUS_OK != ret_code)
+	{
+		return ret_code;
+	}
+
+	packet.address = tcpc_config[port].i2c_slave_addr;
+	packet.data_length = in_size;
+	packet.data = in;
+	packet.ten_bit_address = false;
+	packet.high_speed = false;
+	packet.hs_master_code = 0x00;
+
+	if (flags & I2C_XFER_STOP)
+	{
+		ret_code = i2c_master_read_packet_wait(&i2c_master_instance, &packet);
+	}
+	else
+	{
+		ret_code = i2c_master_read_packet_wait_no_stop(&i2c_master_instance, &packet);
+	}
+	
+	if (STATUS_OK != ret_code)
+	{
+		return ret_code;
+	}
+
+	return STATUS_OK;
 }

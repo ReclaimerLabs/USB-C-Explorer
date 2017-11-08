@@ -8,6 +8,77 @@
 #ifndef __CROS_EC_USB_PD_TCPM_H
 #define __CROS_EC_USB_PD_TCPM_H
 
+/* List of common error codes that can be returned */
+enum ec_error_list {
+	/* Success - no error */
+	EC_SUCCESS = 0,
+	/* Unknown error */
+	EC_ERROR_UNKNOWN = 1,
+	/* Function not implemented yet */
+	EC_ERROR_UNIMPLEMENTED = 2,
+	/* Overflow error; too much input provided. */
+	EC_ERROR_OVERFLOW = 3,
+	/* Timeout */
+	EC_ERROR_TIMEOUT = 4,
+	/* Invalid argument */
+	EC_ERROR_INVAL = 5,
+	/* Already in use, or not ready yet */
+	EC_ERROR_BUSY = 6,
+	/* Access denied */
+	EC_ERROR_ACCESS_DENIED = 7,
+	/* Failed because component does not have power */
+	EC_ERROR_NOT_POWERED = 8,
+	/* Failed because component is not calibrated */
+	EC_ERROR_NOT_CALIBRATED = 9,
+	/* Failed because CRC error */
+	EC_ERROR_CRC = 10,
+	/* Invalid console command param (PARAMn means parameter n is bad) */
+	EC_ERROR_PARAM1 = 11,
+	EC_ERROR_PARAM2 = 12,
+	EC_ERROR_PARAM3 = 13,
+	EC_ERROR_PARAM4 = 14,
+	EC_ERROR_PARAM5 = 15,
+	EC_ERROR_PARAM6 = 16,
+	EC_ERROR_PARAM7 = 17,
+	EC_ERROR_PARAM8 = 18,
+	EC_ERROR_PARAM9 = 19,
+	/* Wrong number of params */
+	EC_ERROR_PARAM_COUNT = 20,
+	/* Interrupt event not handled */
+	EC_ERROR_NOT_HANDLED = 21,
+	/* Data has not changed */
+	EC_ERROR_UNCHANGED = 22,
+	/* Memory allocation */
+	EC_ERROR_MEMORY_ALLOCATION = 23,
+
+	/* Verified boot errors */
+	EC_ERROR_VBOOT_SIGNATURE = 0x1000, /* 4096 */
+	EC_ERROR_VBOOT_SIG_MAGIC = 0x1001,
+	EC_ERROR_VBOOT_SIG_SIZE = 0x1002,
+	EC_ERROR_VBOOT_SIG_ALGORITHM = 0x1003,
+	EC_ERROR_VBOOT_HASH_ALGORITHM = 0x1004,
+	EC_ERROR_VBOOT_SIG_OFFSET = 0x1005,
+	EC_ERROR_VBOOT_DATA_SIZE = 0x1006,
+
+	/* Verified boot key errors */
+	EC_ERROR_VBOOT_KEY = 0x1100,
+	EC_ERROR_VBOOT_KEY_MAGIC = 0x1101,
+	EC_ERROR_VBOOT_KEY_SIZE = 0x1102,
+
+	/* Verified boot data errors */
+	EC_ERROR_VBOOT_DATA = 0x1200,
+	EC_ERROR_VBOOT_DATA_VERIFY = 0x1201,
+
+	/* Module-internal error codes may use this range.   */
+	EC_ERROR_INTERNAL_FIRST = 0x10000,
+	EC_ERROR_INTERNAL_LAST =  0x1FFFF
+};
+
+/* Flags for i2c_xfer() */
+#define I2C_XFER_START (1 << 0)  /* Start smbus session from idle state */
+#define I2C_XFER_STOP (1 << 1)  /* Terminate smbus session with stop bit */
+#define I2C_XFER_SINGLE (I2C_XFER_START | I2C_XFER_STOP)  /* One transaction */
+
 /* Default retry count for transmitting */
 #define PD_RETRY_COUNT 3
 

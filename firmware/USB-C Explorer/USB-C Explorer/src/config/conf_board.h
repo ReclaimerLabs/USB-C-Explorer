@@ -56,9 +56,19 @@
 #define I2C_MODULE				SERCOM3
 #define I2C_SDA_PIN				PIN_PA22
 #define I2C_SCL_PIN				PIN_PA23
+#define I2C_SDA_PINMUX          PINMUX_PA22C_SERCOM3_PAD0
+#define I2C_SCL_PINMUX          PINMUX_PA23C_SERCOM3_PAD1
 
 #define DISP_SIZE_X				128
 #define DISP_SIZE_Y				64
 #define DISP_MEM_SIZE			1024
+
+// USB-C Stuff
+#include <asf.h>
+#include "FUSB302.h"
+#define CONFIG_USB_PD_PORT_COUNT 1
+extern struct i2c_master_module i2c_master_instance;
+
+#define usleep(us) (delay_us(us))
 
 #endif // CONF_BOARD_H

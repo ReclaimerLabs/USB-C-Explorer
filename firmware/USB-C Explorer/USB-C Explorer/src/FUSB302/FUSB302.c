@@ -5,6 +5,7 @@
   Released under an MIT license. See LICENSE file. 
 */
 
+#include <asf.h>
 #include "FUSB302.h"
 #include "usb_pd_tcpm.h"
 
@@ -291,7 +292,7 @@ static int fusb302_send_message(int port, uint16_t header, const uint32_t *data,
 	 * and should not be interpreted as special tokens.
 	 * The 5 LSBs represent X, the number of bytes.
 	 */
-	reg = FUSB302_TKN_PACKSYM;
+	reg = fusb302_TKN_PACKSYM;
 	reg |= (len & 0x1F);
 
 	buf[buf_pos++] = reg;
@@ -311,22 +312,22 @@ static int fusb302_send_message(int port, uint16_t header, const uint32_t *data,
 	buf_pos += len;
 
 	/* put in the CRC */
-	buf[buf_pos++] = FUSB302_TKN_JAMCRC;
+	buf[buf_pos++] = fusb302_TKN_JAMCRC;
 
 	/* put in EOP */
-	buf[buf_pos++] = FUSB302_TKN_EOP;
+	buf[buf_pos++] = fusb302_TKN_EOP;
 
 	/* Turn transmitter off after sending message */
-	buf[buf_pos++] = FUSB302_TKN_TXOFF;
+	buf[buf_pos++] = fusb302_TKN_TXOFF;
 
 	/* Start transmission */
-	reg = FUSB302_TKN_TXON;
-	buf[buf_pos++] = FUSB302_TKN_TXON;
+	reg = fusb302_TKN_TXON;
+	buf[buf_pos++] = fusb302_TKN_TXON;
 
 	/* burst write for speed! */
-	tcpc_lock(port, 1);
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
 	rv = tcpc_xfer(port, buf, buf_pos, 0, 0, I2C_XFER_SINGLE);
-	tcpc_lock(port, 0);
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
 
 	return rv;
 }
@@ -705,7 +706,7 @@ static int fusb302_tcpm_get_message(int port, uint32_t *payload, int *head)
 	/* Read until we have a non-GoodCRC packet or an empty FIFO */
 	do {
 		buf[0] = TCPC_REG_FIFOS;
-		tcpc_lock(port, 1);
+		i2c_master_lock(tcpc_config[port].i2c_host_port);
 
 		/*
 		 * PART 1 OF BURST READ: Write in register address.
@@ -736,7 +737,7 @@ static int fusb302_tcpm_get_message(int port, uint32_t *payload, int *head)
 		 */
 		rv |= tcpc_xfer(port, 0, 0, buf, len+4, I2C_XFER_STOP);
 
-		tcpc_lock(port, 0);
+		i2c_master_unlock(tcpc_config[port].i2c_host_port);
 	} while (!rv && PACKET_IS_GOOD_CRC(*head) &&
 		 !fusb302_rx_fifo_is_empty(port));
 
@@ -752,8 +753,8 @@ static int fusb302_tcpm_get_message(int port, uint32_t *payload, int *head)
 	 * If our FIFO is non-empty then we may have a packet, we may get
 	 * fewer interrupts than packets due to interrupt latency.
 	 */
-	if (!fusb302_rx_fifo_is_empty(port))
-		task_set_event(PD_PORT_TO_TASK_ID(port), PD_EVENT_RX, 0);
+	//if (!fusb302_rx_fifo_is_empty(port))
+	//	task_set_event(PD_PORT_TO_TASK_ID(port), PD_EVENT_RX, 0);
 
 	return rv;
 }
@@ -790,10 +791,10 @@ static int fusb302_tcpm_transmit(int port, enum tcpm_transmit_type type,
 		buf[buf_pos++] = TCPC_REG_FIFOS;
 
 		/* Write the SOP Ordered Set into TX FIFO */
-		buf[buf_pos++] = FUSB302_TKN_SYNC1;
-		buf[buf_pos++] = FUSB302_TKN_SYNC1;
-		buf[buf_pos++] = FUSB302_TKN_SYNC1;
-		buf[buf_pos++] = FUSB302_TKN_SYNC2;
+		buf[buf_pos++] = fusb302_TKN_SYNC1;
+		buf[buf_pos++] = fusb302_TKN_SYNC1;
+		buf[buf_pos++] = fusb302_TKN_SYNC1;
+		buf[buf_pos++] = fusb302_TKN_SYNC2;
 
 		return fusb302_send_message(port, header, data, buf, buf_pos);
 	case TCPC_TX_HARD_RESET:
@@ -813,7 +814,7 @@ static int fusb302_tcpm_transmit(int port, enum tcpm_transmit_type type,
 		reg |= TCPC_REG_CONTROL0_TX_START;
 		tcpc_write(port, TCPC_REG_CONTROL0, reg);
 
-		task_wait_event(PD_T_BIST_TRANSMIT);
+		//task_wait_event(PD_T_BIST_TRANSMIT);
 
 		/* Clear BIST mode bit, TX_START is self-clearing */
 		tcpc_read(port, TCPC_REG_CONTROL1, &reg);
@@ -842,6 +843,7 @@ static int fusb302_tcpm_get_vbus_level(int port)
 
 void fusb302_tcpc_alert(int port)
 {
+#if 0
 	/* interrupt has been received */
 	int interrupt;
 	int interrupta;
@@ -854,15 +856,15 @@ void fusb302_tcpc_alert(int port)
 	tcpc_read(port, TCPC_REG_INTERRUPTB, &interruptb);
 
 	/*
-	 * Ignore BC_LVL changes when transmitting / receiving PD,
-	 * since CC level will constantly change.
-	 */
+		* Ignore BC_LVL changes when transmitting / receiving PD,
+		* since CC level will constantly change.
+		*/
 	if (state[port].rx_enable)
 		interrupt &= ~TCPC_REG_INTERRUPT_BC_LVL;
 
 	if (interrupt & TCPC_REG_INTERRUPT_BC_LVL) {
 		/* CC Status change */
-		task_set_event(PD_PORT_TO_TASK_ID(port), PD_EVENT_CC, 0);
+		//task_set_event(PD_PORT_TO_TASK_ID(port), PD_EVENT_CC, 0);
 	}
 
 	if (interrupt & TCPC_REG_INTERRUPT_COLLISION) {
@@ -872,8 +874,8 @@ void fusb302_tcpc_alert(int port)
 
 	/* GoodCRC was received, our FIFO is now non-empty */
 	if (interrupta & TCPC_REG_INTERRUPTA_TX_SUCCESS) {
-		task_set_event(PD_PORT_TO_TASK_ID(port),
-				PD_EVENT_RX, 0);
+		//task_set_event(PD_PORT_TO_TASK_ID(port),
+		//		PD_EVENT_RX, 0);
 
 		pd_transmit_complete(port, TCPC_TX_COMPLETE_SUCCESS);
 	}
@@ -900,21 +902,21 @@ void fusb302_tcpc_alert(int port)
 
 		pd_execute_hard_reset(port);
 
-		task_wake(PD_PORT_TO_TASK_ID(port));
+		//task_wake(PD_PORT_TO_TASK_ID(port));
 	}
 
 	if (interruptb & TCPC_REG_INTERRUPTB_GCRCSENT) {
 		/* Packet received and GoodCRC sent */
 		/* (this interrupt fires after the GoodCRC finishes) */
 		if (state[port].rx_enable) {
-			task_set_event(PD_PORT_TO_TASK_ID(port),
-					PD_EVENT_RX, 0);
+			//task_set_event(PD_PORT_TO_TASK_ID(port),
+			//		PD_EVENT_RX, 0);
 		} else {
 			/* flush rx fifo if rx isn't enabled */
 			fusb302_flush_rx_fifo(port);
 		}
 	}
-
+#endif
 }
 
 /* For BIST receiving */

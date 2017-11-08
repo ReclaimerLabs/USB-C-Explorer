@@ -8,8 +8,6 @@
 #ifndef __CROS_EC_USB_PD_H
 #define __CROS_EC_USB_PD_H
 
-#include "common.h"
-
 /* PD Host command timeout */
 #define PD_HOST_COMMAND_TIMEOUT_US SECOND
 
