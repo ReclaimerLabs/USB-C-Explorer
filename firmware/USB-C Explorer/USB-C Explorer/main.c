@@ -53,7 +53,7 @@
  */
 #include <asf.h>
 #include "ugui.h"
-#include "tcpm.h"
+#include "tcpm_driver.h"
 
 /**
  * Device Revision definition

@@ -592,6 +592,8 @@
       <Value>../src/ASF/sam0/drivers/sercom/i2c/i2c_sam0</Value>
       <Value>../src/uGUI</Value>
       <Value>../src/FUSB302</Value>
+      <Value>../src/USBC_PD</Value>
+      <Value>../src/USBC_TCPM</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.OtherFlags>-fdata-sections</armgcc.compiler.optimization.OtherFlags>
@@ -1471,6 +1473,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\uGUI\ugui.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\USBC_PD\usb_pd_protocol.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\USBC_TCPM\tcpm.h">

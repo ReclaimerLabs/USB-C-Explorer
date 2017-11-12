@@ -12,6 +12,7 @@
 #include <stdint.h>
 
 // USB-C Stuff
+#include "tcpm.h"
 #include <asf.h>
 #include "FUSB302.h"
 #define CONFIG_USB_PD_PORT_COUNT 1
