@@ -1,6 +1,6 @@
 /*
   FUSB302.c - Library for interacting with the FUSB302B chip.
-  Copyright 2010 The Chromium OS Authors
+  Copyright 2015 The Chromium OS Authors
   Copyright 2017 Jason Cerundolo
   Released under an MIT license. See LICENSE file. 
 */
@@ -8,16 +8,6 @@
 #include <asf.h>
 #include "FUSB302.h"
 #include "usb_pd_tcpm.h"
-
-/* Copyright 2015 The Chromium OS Authors. All rights reserved.
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- *
- * Author: Gabe Noblesmith
- */
-
-/* Type-C port manager for Fairchild's FUSB302 */
-
 #include "tcpm.h"
 #include "usb_pd.h"
 

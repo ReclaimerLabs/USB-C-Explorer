@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include "usb_pd_tcpm.h"
+#include "usb_pd.h"
 
 /* Chip Device ID - 302A or 302B */
 #define fusb302_DEVID_302A 0x08

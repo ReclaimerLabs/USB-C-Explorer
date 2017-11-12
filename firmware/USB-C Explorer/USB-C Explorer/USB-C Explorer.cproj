@@ -941,6 +941,12 @@
     <Compile Include="src\FUSB302\tcpm_driver.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\FUSB302\usb_pd_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\FUSB302\usb_pd_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\QTouch\BitBangSPI_Master.c">
       <SubType>compile</SubType>
     </Compile>
@@ -1475,13 +1481,13 @@
     <Compile Include="src\uGUI\ugui.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\USBC_PD\usb_pd.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\USBC_PD\usb_pd_protocol.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\USBC_TCPM\tcpm.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\USBC_TCPM\usb_pd.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\USBC_TCPM\usb_pd_tcpm.h">

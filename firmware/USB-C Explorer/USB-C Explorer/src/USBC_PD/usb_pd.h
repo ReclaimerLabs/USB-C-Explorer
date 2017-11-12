@@ -5,8 +5,16 @@
 
 /* USB Power delivery module */
 
-#ifndef __CROS_EC_USB_PD_H
-#define __CROS_EC_USB_PD_H
+#ifndef __USB_PD_H
+#define __USB_PD_H
+
+#include "tcpm_driver.h"
+
+/* Time units in microseconds */
+#define MSEC         (1000)
+#define SECOND    (1000000)
+#define MINUTE   (60000000)
+#define HOUR   (3600000000ull)  /* Too big to fit in a signed int */
 
 /* PD Host command timeout */
 #define PD_HOST_COMMAND_TIMEOUT_US SECOND
