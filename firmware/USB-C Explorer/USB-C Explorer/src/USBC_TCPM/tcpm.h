@@ -8,6 +8,7 @@
 #ifndef __CROS_EC_USB_PD_TCPM_TCPM_H
 #define __CROS_EC_USB_PD_TCPM_TCPM_H
 
+#include "tcpm_driver.h"
 #include "usb_pd_tcpm.h"
 
 #if defined(CONFIG_USB_PD_DUAL_ROLE_AUTO_TOGGLE) && \

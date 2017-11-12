@@ -63,12 +63,6 @@
 #define DISP_SIZE_Y				64
 #define DISP_MEM_SIZE			1024
 
-// USB-C Stuff
-#include <asf.h>
-#include "FUSB302.h"
-#define CONFIG_USB_PD_PORT_COUNT 1
-extern struct i2c_master_module i2c_master_instance;
-
 #define usleep(us) (delay_us(us))
 
 #endif // CONF_BOARD_H

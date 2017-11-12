@@ -933,7 +933,10 @@
     <Compile Include="src\FUSB302\FUSB302.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\FUSB302\usb_pd_tcpm.h">
+    <Compile Include="src\FUSB302\tcpm_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\FUSB302\tcpm_driver.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\QTouch\BitBangSPI_Master.c">
@@ -1470,6 +1473,15 @@
     <Compile Include="src\uGUI\ugui.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\USBC_TCPM\tcpm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\USBC_TCPM\usb_pd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\USBC_TCPM\usb_pd_tcpm.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="touch.c">
       <SubType>compile</SubType>
       <DependentUpon>USB-C Explorer.qtdgn</DependentUpon>
@@ -1564,6 +1576,8 @@
     <Folder Include="src\ASF\thirdparty\CMSIS\Lib\GCC\" />
     <Folder Include="src\config\" />
     <Folder Include="src\FUSB302" />
+    <Folder Include="src\USBC_PD" />
+    <Folder Include="src\USBC_TCPM" />
     <Folder Include="src\uGUI" />
     <Folder Include="src\QTouch\" />
   </ItemGroup>
