@@ -65,4 +65,6 @@
 
 #define usleep(us) (delay_us(us))
 
+#define TC_TIMESTAMP			TC4
+
 #endif // CONF_BOARD_H

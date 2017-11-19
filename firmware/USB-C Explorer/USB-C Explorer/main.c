@@ -66,6 +66,8 @@
 #define DEV_REV_C (0x2)
 
 struct rtc_module rtc_instance;
+struct tc_module tc_instance;
+uint32_t g_us_timestamp_upper_32bit;
 struct i2c_master_module i2c_master_instance;
 uint32_t device_rev = 0;
 
@@ -86,7 +88,7 @@ void switch_main_clock(void);
 /*! \brief Initialize timer
  *
  */
-void timer_init( void );
+void rtc_init( void );
 
 /*! \brief RTC timer overflow callback
  *
@@ -157,7 +159,7 @@ void configure_rtc_count(void)
 /*! \brief Initialize timer
  *
  */
-void timer_init(void)
+void rtc_init(void)
 {
 	/* Configure and enable RTC */
 	configure_rtc_count();
@@ -181,6 +183,8 @@ void set_timer_period(void )
 void display_init(void);
 void display_set_pixel(UG_S16 x, UG_S16 y, UG_COLOR color);
 void i2c_init(void);
+void timer_init(void);
+void tc_callback_overflow(void);
 
 /*! \brief Main function
  *
@@ -192,17 +196,19 @@ int main(void)
 	cpu_irq_enable();
 	ioport_init();
 	delay_init();
-	timer_init();
+	rtc_init();
 	touch_sensors_init();
+	system_interrupt_enable_global();
 	
 	display_init();
 	i2c_init();
+	timer_init();
 	// USB-C Specific - TCPM start 2
 	tcpm_init(0);
 	pd_init(0);
 	// USB-C Specific - TCPM end 2
 	
-	system_set_sleepmode(SYSTEM_SLEEPMODE_STANDBY);
+	//system_set_sleepmode(SYSTEM_SLEEPMODE_STANDBY);
 
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
@@ -213,7 +219,7 @@ int main(void)
 	tcpm_get_cc(0, &cc1, &cc2);
 
 	while (1) {
-		system_sleep();
+		//system_sleep();
 
 		touch_sensors_measure();
 		
@@ -321,4 +327,32 @@ void i2c_init(void)
 	config_i2c_master.pinmux_pad1 = I2C_SCL_PINMUX;
 	i2c_master_init(&i2c_master_instance, I2C_MODULE, &config_i2c_master);
 	i2c_master_enable(&i2c_master_instance);
+}
+
+void timer_init(void)
+{
+	struct tc_config config_tc;
+	tc_get_config_defaults(&config_tc);
+
+	config_tc.clock_source    = GCLK_GENERATOR_4;
+	config_tc.counter_size    = TC_COUNTER_SIZE_32BIT;
+	config_tc.clock_prescaler = TC_CLOCK_PRESCALER_DIV1;
+	config_tc.run_in_standby  = true;
+
+	tc_init(&tc_instance, TC_TIMESTAMP, &config_tc);
+
+	g_us_timestamp_upper_32bit = 0;
+	tc_enable(&tc_instance);
+	
+	tc_register_callback(
+		&tc_instance, 
+		tc_callback_overflow, 
+		TC_CALLBACK_CC_CHANNEL0);
+
+	tc_enable_callback(&tc_instance, TC_CALLBACK_CC_CHANNEL0);
+}
+
+void tc_callback_overflow(void)
+{
+	g_us_timestamp_upper_32bit++;
 }

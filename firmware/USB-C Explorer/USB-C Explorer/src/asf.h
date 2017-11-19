@@ -153,6 +153,10 @@
 #include <samd/sleepmgr.h>
 #include <sleepmgr.h>
 
+// From module: TC - Timer Counter (Callback APIs)
+#include <tc.h>
+#include <tc_interrupt.h>
+
 // From module: USB - Universal Serial Bus
 #include <usb.h>
 

@@ -12,6 +12,9 @@
 #define ARRAY_SIZE(t) (sizeof(t) / sizeof(t[0]))
 #endif
 
+extern struct tc_module tc_instance;
+extern uint32_t g_us_timestamp_upper_32bit;
+
 uint32_t pd_task_set_event(uint32_t event, int wait_for_reply)
 {
 	switch (event)
@@ -33,9 +36,9 @@ timestamp_t get_time(void)
 {
 	timestamp_t t;
 	
-	// TODO: set up a timer and read the value out of it
-	//t.le.lo = STM32_TIM32_CNT(2);
-	//t.le.hi = clksrc_high;
+	t.le.lo = tc_get_count_value(&tc_instance);
+	t.le.hi = g_us_timestamp_upper_32bit;
+	
 	return t;
 }
 
