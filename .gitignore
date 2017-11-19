@@ -27,7 +27,7 @@ electrical/__Previews/*
 
 # Unncessary Firmware
 firmware/USB-C Explorer/USB-C Explorer/Debug/*
-*jlink.log
+firmware/USB-C Explorer/USB-C Explorer/jlink.log
 
 # =========================
 # Operating System Files

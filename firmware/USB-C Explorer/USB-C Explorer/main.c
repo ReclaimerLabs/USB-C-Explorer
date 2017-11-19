@@ -54,6 +54,7 @@
 #include <asf.h>
 #include "ugui.h"
 #include "tcpm_driver.h"
+#include "usb_pd_driver.h"
 
 /**
  * Device Revision definition
@@ -198,6 +199,7 @@ int main(void)
 	i2c_init();
 	// USB-C Specific - TCPM start 2
 	tcpm_init(0);
+	pd_init(0);
 	// USB-C Specific - TCPM end 2
 	
 	system_set_sleepmode(SYSTEM_SLEEPMODE_STANDBY);
@@ -214,6 +216,8 @@ int main(void)
 		system_sleep();
 
 		touch_sensors_measure();
+		
+		pd_run_state_machine(0);
 
 		/**
 		 * Update touch status once measurement complete flag is set.

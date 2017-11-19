@@ -412,6 +412,12 @@
     </ListValues>
   </armgcc.linker.libraries.LibrarySearchPaths>
   <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
+  <armgcc.linker.memorysettings.Flash>
+    <ListValues>
+      <Value>.text=0x00004000</Value>
+    </ListValues>
+  </armgcc.linker.memorysettings.Flash>
+  <armgcc.linker.memorysettings.ExternalRAM />
   <armgcc.linker.miscellaneous.LinkerFlags>-Wl,--entry=Reset_Handler -Wl,--cref -mthumb -T../src/ASF/sam0/utils/linker_scripts/samd21/gcc/samd21e17a_flash.ld</armgcc.linker.miscellaneous.LinkerFlags>
   <armgcc.assembler.general.IncludePaths>
     <ListValues>
@@ -1482,6 +1488,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\USBC_PD\usb_pd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\USBC_PD\usb_pd_policy.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\USBC_PD\usb_pd_protocol.c">

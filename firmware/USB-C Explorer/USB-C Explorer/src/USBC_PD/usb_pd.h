@@ -1627,6 +1627,18 @@ void pd_hw_init(int port, int role);
  */
 void pd_hw_init_rx(int port);
 
+/**
+ * Initialize the Power Delivery state machine
+ */
+void pd_init(int port);
+
+/**
+ * Run the state machine. This function must be called regularly
+ * to iterate through the state machine. It uses get_time() to 
+ * determine what actions to take each call. 
+ */
+void pd_run_state_machine(int port);
+
 /* --- Protocol layer functions --- */
 
 /**

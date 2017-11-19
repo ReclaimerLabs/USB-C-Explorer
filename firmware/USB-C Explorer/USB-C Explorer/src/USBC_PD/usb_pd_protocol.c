@@ -2043,7 +2043,7 @@ static int pd_restart_tcpc(int port)
 }
 #endif
 
-void pd_init(void *u)
+void pd_init(int port)
 {
 #ifdef CONFIG_COMMON_RUNTIME
 	pd_init_tasks();
@@ -2125,7 +2125,7 @@ void pd_init(void *u)
 #endif
 }
 
-void pd_run_state_machine(void)
+void pd_run_state_machine(int port)
 {
 #ifdef CONFIG_USB_PD_REV30
 	/* send any pending messages */
