@@ -388,6 +388,8 @@ static int fusb302_tcpm_init(int port)
 	reg &= ~TCPC_REG_MASK_COLLISION;
 	/* misc alert */
 	reg &= ~TCPC_REG_MASK_ALERT;
+	/* packet received with correct CRC */
+	reg &= ~TCPC_REG_MASK_CRC_CHK;
 	tcpc_write(port, TCPC_REG_MASK, reg);
 
 	reg = 0xFF;
@@ -833,7 +835,6 @@ static int fusb302_tcpm_get_vbus_level(int port)
 
 void fusb302_tcpc_alert(int port)
 {
-#if 0
 	/* interrupt has been received */
 	int interrupt;
 	int interrupta;
@@ -906,7 +907,6 @@ void fusb302_tcpc_alert(int port)
 			fusb302_flush_rx_fifo(port);
 		}
 	}
-#endif
 }
 
 /* For BIST receiving */

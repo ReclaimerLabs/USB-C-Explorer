@@ -9,6 +9,7 @@
 #define __USB_PD_H
 
 #include "tcpm_driver.h"
+#include "usb_pd_driver.h"
 
 /* Time units in microseconds */
 #define MSEC         (1000)

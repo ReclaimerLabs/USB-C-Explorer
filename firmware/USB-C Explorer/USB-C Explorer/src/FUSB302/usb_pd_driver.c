@@ -32,6 +32,29 @@ const uint32_t pd_src_pdo[] = {
 };
 const int pd_src_pdo_cnt = ARRAY_SIZE(pd_src_pdo);
 
+const uint32_t pd_snk_pdo[] = {
+	PDO_FIXED(5000, 500, PDO_FIXED_FLAGS),
+	PDO_FIXED(9000, 500, PDO_FIXED_FLAGS),
+	PDO_FIXED(20000, 500, PDO_FIXED_FLAGS),
+};
+const int pd_snk_pdo_cnt = ARRAY_SIZE(pd_snk_pdo);
+
+void pd_set_input_current_limit(int port, uint32_t max_ma,
+	uint32_t supply_voltage)
+{
+
+}
+
+int pd_is_valid_input_voltage(int mv)
+{
+	return 1;
+}
+
+int pd_snk_is_vbus_provided(int port)
+{
+	return 1;
+}
+
 timestamp_t get_time(void)
 {
 	timestamp_t t;
@@ -122,6 +145,12 @@ void pd_execute_data_swap(int port, int data_role)
 int pd_check_data_swap(int port, int data_role)
 {
 	// Never allow data swap
+	return 0;
+}
+
+int pd_check_power_swap(int port)
+{
+	/* Always refuse power swap */
 	return 0;
 }
 

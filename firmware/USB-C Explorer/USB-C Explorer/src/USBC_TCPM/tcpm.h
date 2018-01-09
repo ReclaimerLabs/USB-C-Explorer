@@ -46,6 +46,11 @@ static inline int tcpm_init(int port)
 	return rv;
 }
 
+static inline int tcpm_release(int port)
+{
+	return tcpc_config[port].drv->release(port);
+}
+
 static inline int tcpm_get_cc(int port, int *cc1, int *cc2)
 {
 	return tcpc_config[port].drv->get_cc(port, cc1, cc2);

@@ -373,10 +373,10 @@ static inline void set_state(int port, enum pd_states next_state)
 		/* Clear the input current limit */
 		pd_set_input_current_limit(port, 0, 0);
 #ifdef CONFIG_CHARGE_MANAGER
-		typec_set_input_current_limit(port, 0, 0);
-		charge_manager_set_ceil(port,
-					CEIL_REQUESTOR_PD,
-					CHARGE_CEIL_NONE);
+		//typec_set_input_current_limit(port, 0, 0);
+		//charge_manager_set_ceil(port,
+		//			CEIL_REQUESTOR_PD,
+		//			CHARGE_CEIL_NONE);
 #endif
 #ifdef CONFIG_USBC_VCONN
 		tcpm_set_vconn(port, 0);
@@ -410,7 +410,7 @@ static inline void set_state(int port, enum pd_states next_state)
 		pd[port].flags &= ~PD_FLAGS_RESET_ON_DISCONNECT_MASK;
 #endif
 #ifdef CONFIG_CHARGE_MANAGER
-		charge_manager_update_dualrole(port, CAP_UNKNOWN);
+		//charge_manager_update_dualrole(port, CAP_UNKNOWN);
 #endif
 #ifdef CONFIG_USB_PD_ALT_MODE_DFP
 		pd_dfp_exit_mode(port, 0, 0);
@@ -812,7 +812,7 @@ static int send_request(int port, uint32_t rdo)
 
 	return bit_len;
 }
-
+#ifdef CONFIG_BBRAM
 static int pd_get_saved_active(int port)
 {
 	uint8_t val;
@@ -831,6 +831,7 @@ static void pd_set_saved_active(int port, int val)
 				    SYSTEM_BBRAM_IDX_PD0, val))
 		CPRINTS("PD NVRAM FAIL");
 }
+#endif // CONFIG_BBRAM
 #endif /* CONFIG_USB_PD_DUAL_ROLE */
 
 #ifdef CONFIG_COMMON_RUNTIME
@@ -930,9 +931,9 @@ void pd_execute_hard_reset(int port)
 		/* Clear the input current limit */
 		pd_set_input_current_limit(port, 0, 0);
 #ifdef CONFIG_CHARGE_MANAGER
-		charge_manager_set_ceil(port,
-					CEIL_REQUESTOR_PD,
-					CHARGE_CEIL_NONE);
+		//charge_manager_set_ceil(port,
+		//			CEIL_REQUESTOR_PD,
+		//			CHARGE_CEIL_NONE);
 #endif /* CONFIG_CHARGE_MANAGER */
 
 		set_state(port, PD_STATE_SNK_HARD_RESET_RECOVER);
@@ -977,7 +978,8 @@ static int pd_send_request_msg(int port, int always_send_request)
 	int res;
 
 #ifdef CONFIG_CHARGE_MANAGER
-	int charging = (charge_manager_get_active_charge_port() == port);
+	//int charging = (charge_manager_get_active_charge_port() == port);
+	const int charging = 1;
 #else
 	const int charging = 1;
 #endif
@@ -1013,8 +1015,8 @@ static int pd_send_request_msg(int port, int always_send_request)
 			return EC_SUCCESS;
 #ifdef CONFIG_CHARGE_MANAGER
 		/* Limit current to PD_MIN_MA during transition */
-		else
-			charge_manager_force_ceil(port, PD_MIN_MA);
+		//else
+		//	charge_manager_force_ceil(port, PD_MIN_MA);
 #endif
 	}
 
@@ -1081,12 +1083,14 @@ static void pd_update_pdo_flags(int port, uint32_t pdo)
 	 * powered, or if we are a sink and the device identity matches a
 	 * charging white-list.
 	 */
+	/*
 	if (!(pd[port].flags & PD_FLAGS_PARTNER_DR_POWER) ||
 	    (pd[port].flags & PD_FLAGS_PARTNER_EXTPOWER) ||
 	    charge_whitelisted)
 		charge_manager_update_dualrole(port, CAP_DEDICATED);
 	else
 		charge_manager_update_dualrole(port, CAP_DUALROLE);
+	*/
 #endif
 }
 
@@ -1156,7 +1160,9 @@ static void handle_data_request(int port, uint16_t head,
 					sink_can_xmit(port, SINK_TX_OK);
 #endif
 #ifdef CONFIG_USB_PD_DUAL_ROLE
+#ifdef CONFIG_BBRAM
 				pd_set_saved_active(port, 1);
+#endif
 #endif
 				pd[port].requested_idx = RDO_POS(payload[0]);
 				set_state(port, PD_STATE_SRC_ACCEPTED);
@@ -1211,7 +1217,8 @@ void pd_request_power_swap(int port)
 		set_state(port, PD_STATE_SRC_SWAP_INIT);
 	else if (pd[port].task_state == PD_STATE_SNK_READY)
 		set_state(port, PD_STATE_SNK_SWAP_INIT);
-	task_wake(PD_PORT_TO_TASK_ID(port));
+	// getting rid of task stuff
+	//task_wake(PD_PORT_TO_TASK_ID(port));
 }
 
 #ifdef CONFIG_USBC_VCONN_SWAP
@@ -1220,7 +1227,8 @@ static void pd_request_vconn_swap(int port)
 	if (pd[port].task_state == PD_STATE_SRC_READY ||
 	    pd[port].task_state == PD_STATE_SNK_READY)
 		set_state(port, PD_STATE_VCONN_SWAP_SEND);
-	task_wake(PD_PORT_TO_TASK_ID(port));
+	// getting rid of task stuff
+	//task_wake(PD_PORT_TO_TASK_ID(port));
 }
 
 void pd_try_vconn_src(int port)
@@ -1351,9 +1359,9 @@ static void handle_ctrl_request(int port, uint16_t head,
 						   pd[port].supply_voltage);
 #ifdef CONFIG_CHARGE_MANAGER
 			/* Set ceiling based on what's negotiated */
-			charge_manager_set_ceil(port,
-						CEIL_REQUESTOR_PD,
-						pd[port].curr_limit);
+			//charge_manager_set_ceil(port,
+			//			CEIL_REQUESTOR_PD,
+			//			pd[port].curr_limit);
 #endif
 		}
 		break;
@@ -1449,7 +1457,9 @@ static void handle_ctrl_request(int port, uint16_t head,
 		} else if (pd[port].task_state == PD_STATE_SNK_REQUESTED) {
 			/* explicit contract is now in place */
 			pd[port].flags |= PD_FLAGS_EXPLICIT_CONTRACT;
+#ifdef CONFIG_BBRAM
 			pd_set_saved_active(port, 1);
+#endif
 			set_state(port, PD_STATE_SNK_TRANSITION);
 #endif
 		}
@@ -1788,8 +1798,10 @@ void pd_set_dual_role(enum pd_dual_role_states state)
 
 	/* Inform PD tasks of dual role change. */
 	for (i = 0; i < CONFIG_USB_PD_PORT_COUNT; i++)
-		task_set_event(PD_PORT_TO_TASK_ID(i),
-			       PD_EVENT_UPDATE_DUAL_ROLE, 0);
+		// getting rid of task stuff
+		//task_set_event(PD_PORT_TO_TASK_ID(i),
+		//	       PD_EVENT_UPDATE_DUAL_ROLE, 0);
+		;
 }
 
 void pd_update_dual_role_config(int port)
@@ -1854,6 +1866,7 @@ static void pd_partner_port_reset(int port)
 {
 	uint64_t timeout;
 
+#ifdef CONFIG_BBRAM
 	/*
 	 * Check our battery-backed previous port state. If PD comms were
 	 * active, and we didn't just lose power, make sure we
@@ -1864,14 +1877,16 @@ static void pd_partner_port_reset(int port)
 	   system_get_reset_flags() &
 	   (RESET_FLAG_BROWNOUT | RESET_FLAG_POWER_ON))
 		return;
-
+#endif // CONFIG_BBRAM
 	/* Provide Rp for 100 msec. or until we no longer have VBUS. */
 	tcpm_set_cc(port, TYPEC_CC_RP);
 	timeout = get_time().val + 100 * MSEC;
 
 	while (get_time().val < timeout && pd_is_vbus_present(port))
 		msleep(10);
+#ifdef CONFIG_BBRAM
 	pd_set_saved_active(port, 0);
+#endif
 }
 #endif /* CONFIG_USB_PD_DUAL_ROLE */
 
@@ -1981,7 +1996,8 @@ static typec_current_t get_typec_current_limit(int polarity, int cc1, int cc2)
 void pd_set_new_power_request(int port)
 {
 	pd[port].new_power_request = 1;
-	task_wake(PD_PORT_TO_TASK_ID(port));
+	// getting rid of task stuff
+	//task_wake(PD_PORT_TO_TASK_ID(port));
 }
 #endif /* CONFIG_CHARGE_MANAGER */
 
@@ -2061,7 +2077,7 @@ void pd_init(int port)
 	res = tcpm_init(port);
 
 #ifdef CONFIG_USB_PD_DUAL_ROLE
-	pd_partner_port_reset(port);
+	//pd_partner_port_reset(port);
 #endif
 
 	CPRINTS("TCPC p%d init %s", port, res ? "failed" : "ready");
@@ -2088,7 +2104,8 @@ void pd_init(int port)
 	 * present. This flag is used to maintain a PD connection after a
 	 * reset by sending a soft reset.
 	 */
-	pd[port].flags = pd_is_vbus_present(port) ? PD_FLAGS_VBUS_NEVER_LOW : 0;
+	//pd[port].flags = pd_is_vbus_present(port) ? PD_FLAGS_VBUS_NEVER_LOW : 0;
+	pd[port].flags = 0;
 #endif
 
 	/* Disable TCPC RX until connection is established */
@@ -2120,8 +2137,8 @@ void pd_init(int port)
 #ifdef CONFIG_CHARGE_MANAGER
 	/* Initialize PD and type-C supplier current limits to 0 */
 	pd_set_input_current_limit(port, 0, 0);
-	typec_set_input_current_limit(port, 0, 0);
-	charge_manager_update_dualrole(port, CAP_UNKNOWN);
+	//typec_set_input_current_limit(port, 0, 0);
+	//charge_manager_update_dualrole(port, CAP_UNKNOWN);
 #endif
 }
 
@@ -2203,10 +2220,10 @@ void pd_run_state_machine(int port)
 
 	/* process any potential incoming message */
 	incoming_packet = evt & PD_EVENT_RX;
-	if (incoming_packet) {
+	//if (incoming_packet) {
 		if (!tcpm_get_message(port, payload, &head))
 			handle_request(port, head, payload);
-	}
+	//}
 
 	if (pd[port].req_suspend_state)
 		set_state(port, PD_STATE_SUSPENDED);
@@ -2672,8 +2689,9 @@ void pd_run_state_machine(int port)
 			CPRINTS("TCPC p%d release failed!", port);
 #endif
 		/* Wait for resume */
-		while (pd[port].task_state == PD_STATE_SUSPENDED)
-			task_wait_event(-1);
+		// getting rid of task stuff
+		//while (pd[port].task_state == PD_STATE_SUSPENDED)
+		//	task_wait_event(-1);
 #ifdef CONFIG_USB_PD_TCPC
 		pd_hw_init(port, PD_ROLE_DEFAULT(port));
 		CPRINTS("TCPC p%d resumed!", port);
@@ -2810,8 +2828,8 @@ void pd_run_state_machine(int port)
 #if defined(CONFIG_CHARGE_MANAGER)
 		typec_curr = get_typec_current_limit(pd[port].polarity,
 							    cc1, cc2);
-		typec_set_input_current_limit(
-			port, typec_curr, TYPE_C_VOLTAGE);
+		//typec_set_input_current_limit(
+		//	port, typec_curr, TYPE_C_VOLTAGE);
 #endif
 		/* If PD comm is enabled, enable TCPC RX */
 		if (pd_comm_is_enabled(port))
@@ -2826,11 +2844,12 @@ void pd_run_state_machine(int port)
 			if (new_cc_state == PD_CC_DEBUG_ACC)
 				pd[port].flags |=
 					PD_FLAGS_TS_DTS_PARTNER;
+			send_control(port, PD_CTRL_GET_SOURCE_CAP);
 			set_state(port, PD_STATE_SNK_DISCOVERY);
 			timeout = 10*MSEC;
-			hook_call_deferred(
-				&pd_usb_billboard_deferred_data,
-				PD_T_AME);
+			//hook_call_deferred(
+			//	&pd_usb_billboard_deferred_data,
+			//	PD_T_AME);
 		}
 		break;
 	case PD_STATE_SNK_HARD_RESET_RECOVER:
@@ -2950,8 +2969,8 @@ void pd_run_state_machine(int port)
 				/* set new input current limit */
 				typec_curr = get_typec_current_limit(
 					pd[port].polarity, cc1, cc2);
-				typec_set_input_current_limit(
-					port, typec_curr, TYPE_C_VOLTAGE);
+				//typec_set_input_current_limit(
+				//	port, typec_curr, TYPE_C_VOLTAGE);
 			} else {
 				/* delay for debounce */
 				timeout = PD_T_DEBOUNCE;
@@ -3053,10 +3072,10 @@ void pd_run_state_machine(int port)
 		/* Stop drawing power */
 		pd_set_input_current_limit(port, 0, 0);
 #ifdef CONFIG_CHARGE_MANAGER
-		typec_set_input_current_limit(port, 0, 0);
-		charge_manager_set_ceil(port,
-					CEIL_REQUESTOR_PD,
-					CHARGE_CEIL_NONE);
+		//typec_set_input_current_limit(port, 0, 0);
+		//charge_manager_set_ceil(port,
+		//			CEIL_REQUESTOR_PD,
+		//			CHARGE_CEIL_NONE);
 #endif
 		set_state(port, PD_STATE_SNK_SWAP_SRC_DISABLE);
 		timeout = 10*MSEC;
@@ -3217,8 +3236,8 @@ void pd_run_state_machine(int port)
 				* effects of a wrong assumption here
 				* are minimal.
 				*/
-			charge_manager_update_dualrole(port,
-							    CAP_DEDICATED);
+			//charge_manager_update_dualrole(port,
+			//				    CAP_DEDICATED);
 		}
 #endif
 
@@ -3423,7 +3442,7 @@ static void dual_role_on(void)
 
 	for (i = 0; i < CONFIG_USB_PD_PORT_COUNT; i++) {
 #ifdef CONFIG_CHARGE_MANAGER
-		if (charge_manager_get_active_charge_port() != i)
+		//if (charge_manager_get_active_charge_port() != i)
 #endif
 			pd[i].flags |= PD_FLAGS_CHECK_PR_ROLE |
 				       PD_FLAGS_CHECK_DR_ROLE;
@@ -3472,7 +3491,8 @@ void pd_set_suspend(int port, int enable)
 	if (enable) {
 		pd[port].req_suspend_state = 1;
 		do {
-			task_wake(PD_PORT_TO_TASK_ID(port));
+			// getting rid of task stuff
+			//task_wake(PD_PORT_TO_TASK_ID(port));
 			if (pd[port].task_state == PD_STATE_SUSPENDED)
 				break;
 			msleep(1);
@@ -3484,7 +3504,8 @@ void pd_set_suspend(int port, int enable)
 			CPRINTS("TCPC p%d suspend disable request "
 				"while not suspended!", port);
 		set_state(port, PD_DEFAULT_STATE(port));
-		task_wake(PD_PORT_TO_TASK_ID(port));
+		// getting rid of task stuff
+		//task_wake(PD_PORT_TO_TASK_ID(port));
 	}
 }
 
@@ -3641,7 +3662,8 @@ void pd_request_source_voltage(int port, int mv)
 		set_state(port, PD_STATE_SNK_DISCONNECTED);
 	}
 
-	task_wake(PD_PORT_TO_TASK_ID(port));
+	// getting rid of task stuff
+	//task_wake(PD_PORT_TO_TASK_ID(port));
 }
 
 void pd_set_external_voltage_limit(int port, int mv)
@@ -3652,7 +3674,8 @@ void pd_set_external_voltage_limit(int port, int mv)
 	    pd[port].task_state == PD_STATE_SNK_TRANSITION) {
 		/* Set flag to send new power request in pd_task */
 		pd[port].new_power_request = 1;
-		task_wake(PD_PORT_TO_TASK_ID(port));
+		// getting rid of task stuff
+		//task_wake(PD_PORT_TO_TASK_ID(port));
 	}
 }
 
@@ -3661,7 +3684,8 @@ void pd_update_contract(int port)
 	if ((pd[port].task_state >= PD_STATE_SRC_NEGOCIATE) &&
 	    (pd[port].task_state <= PD_STATE_SRC_GET_SINK_CAP)) {
 		pd[port].flags |= PD_FLAGS_UPDATE_SRC_CAPS;
-		task_wake(PD_PORT_TO_TASK_ID(port));
+		// getting rid of task stuff
+		//task_wake(PD_PORT_TO_TASK_ID(port));
 	}
 }
 
@@ -3769,20 +3793,24 @@ static int command_pd(int argc, char **argv)
 
 	if (!strcasecmp(argv[2], "tx")) {
 		set_state(port, PD_STATE_SNK_DISCOVERY);
-		task_wake(PD_PORT_TO_TASK_ID(port));
+		// getting rid of task stuff
+		//task_wake(PD_PORT_TO_TASK_ID(port));
 	} else if (!strcasecmp(argv[2], "bist_rx")) {
 		set_state(port, PD_STATE_BIST_RX);
-		task_wake(PD_PORT_TO_TASK_ID(port));
+		// getting rid of task stuff
+		//task_wake(PD_PORT_TO_TASK_ID(port));
 	} else if (!strcasecmp(argv[2], "bist_tx")) {
 		if (*e)
 			return EC_ERROR_PARAM3;
 		set_state(port, PD_STATE_BIST_TX);
-		task_wake(PD_PORT_TO_TASK_ID(port));
+		// getting rid of task stuff
+		//task_wake(PD_PORT_TO_TASK_ID(port));
 	} else if (!strcasecmp(argv[2], "charger")) {
 		pd[port].power_role = PD_ROLE_SOURCE;
 		tcpm_set_cc(port, TYPEC_CC_RP);
 		set_state(port, PD_STATE_SRC_DISCONNECTED);
-		task_wake(PD_PORT_TO_TASK_ID(port));
+		// getting rid of task stuff
+		//task_wake(PD_PORT_TO_TASK_ID(port));
 	} else if (!strncasecmp(argv[2], "dev", 3)) {
 		int max_volt;
 		if (argc >= 4)
@@ -3802,7 +3830,8 @@ static int command_pd(int argc, char **argv)
 		return EC_SUCCESS;
 	} else if (!strncasecmp(argv[2], "hard", 4)) {
 		set_state(port, PD_STATE_HARD_RESET_SEND);
-		task_wake(PD_PORT_TO_TASK_ID(port));
+		// getting rid of task stuff
+		//task_wake(PD_PORT_TO_TASK_ID(port));
 	} else if (!strncasecmp(argv[2], "info", 4)) {
 		int i;
 		ccprintf("Hash ");
@@ -3812,7 +3841,8 @@ static int command_pd(int argc, char **argv)
 						pd[port].current_image));
 	} else if (!strncasecmp(argv[2], "soft", 4)) {
 		set_state(port, PD_STATE_SOFT_RESET);
-		task_wake(PD_PORT_TO_TASK_ID(port));
+		// getting rid of task stuff
+		//task_wake(PD_PORT_TO_TASK_ID(port));
 	} else if (!strncasecmp(argv[2], "swap", 4)) {
 		if (argc < 4)
 			return EC_ERROR_PARAM_COUNT;

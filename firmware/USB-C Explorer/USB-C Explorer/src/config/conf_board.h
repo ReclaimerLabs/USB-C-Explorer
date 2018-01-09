@@ -59,11 +59,12 @@
 #define I2C_SDA_PINMUX          PINMUX_PA22C_SERCOM3_PAD0
 #define I2C_SCL_PINMUX          PINMUX_PA23C_SERCOM3_PAD1
 
+#define USBC_INT_PIN			PIN_PA19
+//#define USBC_INT_PINMUX         PINMUX_PA19A_EIC_EXTINT3
+
 #define DISP_SIZE_X				128
 #define DISP_SIZE_Y				64
 #define DISP_MEM_SIZE			1024
-
-#define usleep(us) (delay_us(us))
 
 #define TC_TIMESTAMP			TC4
 

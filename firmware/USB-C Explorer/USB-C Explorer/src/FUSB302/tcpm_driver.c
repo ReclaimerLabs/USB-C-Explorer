@@ -137,15 +137,18 @@ int tcpc_xfer(int port,
 	if ((out_size != 0) && (in_size != 0))
 	{
 		ret_code = i2c_master_write_packet_wait_no_stop(&i2c_master_instance, &packet);
+		if (STATUS_OK != ret_code)
+		{
+			return ret_code;
+		}
 	}
 	else if (out_size != 0)
 	{
 		ret_code = i2c_master_write_packet_wait(&i2c_master_instance, &packet);
-	}
-	
-	if (STATUS_OK != ret_code)
-	{
-		return ret_code;
+		if (STATUS_OK != ret_code)
+		{
+			return ret_code;
+		}
 	}
 
 	packet.address = tcpc_config[port].i2c_slave_addr;
@@ -155,18 +158,24 @@ int tcpc_xfer(int port,
 	packet.high_speed = false;
 	packet.hs_master_code = 0x00;
 
-	if (flags & I2C_XFER_STOP)
+	if (in_size != 0)
 	{
-		ret_code = i2c_master_read_packet_wait(&i2c_master_instance, &packet);
-	}
-	else
-	{
-		ret_code = i2c_master_read_packet_wait_no_stop(&i2c_master_instance, &packet);
-	}
-	
-	if (STATUS_OK != ret_code)
-	{
-		return ret_code;
+		if (flags & I2C_XFER_STOP)
+		{
+			ret_code = i2c_master_read_packet_wait(&i2c_master_instance, &packet);
+			if (STATUS_OK != ret_code)
+			{
+				return ret_code;
+			}
+		}
+		else
+		{
+			ret_code = i2c_master_read_packet_wait_no_stop(&i2c_master_instance, &packet);
+			if (STATUS_OK != ret_code)
+			{
+				return ret_code;
+			}
+		}
 	}
 
 	return STATUS_OK;
