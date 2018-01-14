@@ -30,7 +30,9 @@ static struct fusb302_chip_state {
  */
 static void fusb302_pd_reset(int port)
 {
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
 	tcpc_write(port, TCPC_REG_RESET, TCPC_REG_RESET_PD_RESET);
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
 }
 
 /*
@@ -45,22 +47,27 @@ static void fusb302_flush_rx_fifo(int port)
 	 * then we'll have to keep a shadow of what this register
 	 * value should be so we don't clobber it here!
 	 */
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
 	tcpc_write(port, TCPC_REG_CONTROL1, TCPC_REG_CONTROL1_RX_FLUSH);
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
 }
 
 static void fusb302_flush_tx_fifo(int port)
 {
 	int reg;
 
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
 	tcpc_read(port, TCPC_REG_CONTROL0, &reg);
 	reg |= TCPC_REG_CONTROL0_TX_FLUSH;
 	tcpc_write(port, TCPC_REG_CONTROL0, reg);
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
 }
 
 static void fusb302_auto_goodcrc_enable(int port, int enable)
 {
 	int reg;
 
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
 	tcpc_read(port,	TCPC_REG_SWITCHES1, &reg);
 
 	if (enable)
@@ -69,6 +76,7 @@ static void fusb302_auto_goodcrc_enable(int port, int enable)
 		reg &= ~TCPC_REG_SWITCHES1_AUTO_GCRC;
 
 	tcpc_write(port, TCPC_REG_SWITCHES1, reg);
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
 }
 
 /* Convert BC LVL values (in FUSB302) to Type-C CC Voltage Status */
@@ -100,6 +108,8 @@ static int measure_cc_pin_source(int port, int cc_measure)
 	int reg;
 	int cc_lvl;
 
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
+	
 	/* Read status register */
 	tcpc_read(port, TCPC_REG_SWITCHES0, &reg);
 	/* Save current value */
@@ -146,6 +156,8 @@ static int measure_cc_pin_source(int port, int cc_measure)
 
 	/* Restore SWITCHES0 register to its value prior */
 	tcpc_write(port, TCPC_REG_SWITCHES0, switches0_reg);
+	
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
 
 	return cc_lvl;
 }
@@ -178,6 +190,8 @@ static void detect_cc_pin_sink(int port, int *cc1, int *cc2)
 	int orig_meas_cc2;
 	int bc_lvl_cc1;
 	int bc_lvl_cc2;
+	
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
 
 	/*
 	 * Measure CC1 first.
@@ -249,6 +263,8 @@ static void detect_cc_pin_sink(int port, int *cc1, int *cc2)
 		reg &= ~TCPC_REG_SWITCHES0_MEAS_CC2;
 
 	tcpc_write(port, TCPC_REG_SWITCHES0, reg);
+	
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
 }
 
 /* Parse header bytes for the size of packet */
@@ -327,6 +343,8 @@ static int fusb302_tcpm_select_rp_value(int port, int rp)
 	int reg;
 	int rv;
 	uint8_t vnc, rd;
+	
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
 
 	rv = tcpc_read(port, TCPC_REG_CONTROL0, &reg);
 	if (rv)
@@ -353,7 +371,11 @@ static int fusb302_tcpm_select_rp_value(int port, int rp)
 	}
 	state[port].mdac_vnc = vnc;
 	state[port].mdac_rd = rd;
-	return tcpc_write(port, TCPC_REG_CONTROL0, reg);
+	rv = tcpc_write(port, TCPC_REG_CONTROL0, reg);
+	
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
+	
+	return rv;
 }
 
 static int fusb302_tcpm_init(int port)
@@ -369,6 +391,8 @@ static int fusb302_tcpm_init(int port)
 	state[port].mdac_rd = TCPC_REG_MEASURE_MDAC_MV(PD_SRC_DEF_RD_THRESH_MV);
 
 	/* all other variables assumed to default to 0 */
+	
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
 
 	/* Restore default settings */
 	tcpc_write(port, TCPC_REG_RESET, TCPC_REG_RESET_SW_RESET);
@@ -420,6 +444,8 @@ static int fusb302_tcpm_init(int port)
 	/* Turn on the power! */
 	/* TODO: Reduce power consumption */
 	tcpc_write(port, TCPC_REG_POWER, TCPC_REG_POWER_PWR_ALL);
+	
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
 
 	return 0;
 }
@@ -445,6 +471,8 @@ static int fusb302_tcpm_get_cc(int port, int *cc1, int *cc2)
 static int fusb302_tcpm_set_cc(int port, int pull)
 {
 	int reg;
+	
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
 
 	/* NOTE: FUSB302 toggles a single pull-up between CC1 and CC2 */
 	/* NOTE: FUSB302 Does not support Ra. */
@@ -511,6 +539,9 @@ static int fusb302_tcpm_set_cc(int port, int pull)
 		/* Unsupported... */
 		return EC_ERROR_UNIMPLEMENTED;
 	}
+	
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
+	
 	return 0;
 }
 
@@ -518,6 +549,8 @@ static int fusb302_tcpm_set_polarity(int port, int polarity)
 {
 	/* Port polarity : 0 => CC1 is CC line, 1 => CC2 is CC line */
 	int reg;
+	
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
 
 	tcpc_read(port, TCPC_REG_SWITCHES0, &reg);
 
@@ -561,6 +594,8 @@ static int fusb302_tcpm_set_polarity(int port, int polarity)
 
 	/* Save the polarity for later */
 	state[port].cc_polarity = polarity;
+	
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
 
 	return 0;
 }
@@ -585,6 +620,8 @@ static int fusb302_tcpm_set_vconn(int port, int enable)
 		tcpm_set_polarity(port, state[port].cc_polarity);
 	} else {
 
+		i2c_master_lock(tcpc_config[port].i2c_host_port);
+		
 		tcpc_read(port, TCPC_REG_SWITCHES0, &reg);
 
 		/* clear VCONN switch bits */
@@ -592,6 +629,8 @@ static int fusb302_tcpm_set_vconn(int port, int enable)
 		reg &= ~TCPC_REG_SWITCHES0_VCONN_CC2;
 
 		tcpc_write(port, TCPC_REG_SWITCHES0, reg);
+		
+		i2c_master_unlock(tcpc_config[port].i2c_host_port);
 	}
 
 	return 0;
@@ -612,6 +651,8 @@ static int fusb302_tcpm_set_msg_header(int port, int power_role, int data_role)
 		reg |= TCPC_REG_SWITCHES1_DATAROLE;
 
 	tcpc_write(port, TCPC_REG_SWITCHES1, reg);
+	
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
 
 	return 0;
 }
@@ -621,6 +662,8 @@ static int fusb302_tcpm_set_rx_enable(int port, int enable)
 	int reg;
 
 	state[port].rx_enable = enable;
+	
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
 
 	/* Get current switch state */
 	tcpc_read(port, TCPC_REG_SWITCHES0, &reg);
@@ -664,6 +707,8 @@ static int fusb302_tcpm_set_rx_enable(int port, int enable)
 				   reg & ~TCPC_REG_MASK_BC_LVL);
 	}
 
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
+
 	fusb302_auto_goodcrc_enable(port, enable);
 
 	return 0;
@@ -672,10 +717,16 @@ static int fusb302_tcpm_set_rx_enable(int port, int enable)
 /* Return true if our Rx FIFO is empty */
 static int fusb302_rx_fifo_is_empty(int port)
 {
-	int reg;
+	int reg, ret;
 
-	return (!tcpc_read(port, TCPC_REG_STATUS1, &reg)) &&
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
+
+	ret = (!tcpc_read(port, TCPC_REG_STATUS1, &reg)) &&
 	       (reg & TCPC_REG_STATUS1_RX_EMPTY);
+		   
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
+		   
+	return ret;
 }
 
 static int fusb302_tcpm_get_message(int port, uint32_t *payload, int *head)
@@ -790,13 +841,16 @@ static int fusb302_tcpm_transmit(int port, enum tcpm_transmit_type type,
 
 		return fusb302_send_message(port, header, data, buf, buf_pos);
 	case TCPC_TX_HARD_RESET:
+		i2c_master_lock(tcpc_config[port].i2c_host_port);
 		/* Simply hit the SEND_HARD_RESET bit */
 		tcpc_read(port, TCPC_REG_CONTROL3, &reg);
 		reg |= TCPC_REG_CONTROL3_SEND_HARDRESET;
 		tcpc_write(port, TCPC_REG_CONTROL3, reg);
+		i2c_master_unlock(tcpc_config[port].i2c_host_port);
 
 		break;
 	case TCPC_TX_BIST_MODE_2:
+		i2c_master_lock(tcpc_config[port].i2c_host_port);
 		/* Hit the BIST_MODE2 bit and start TX */
 		tcpc_read(port, TCPC_REG_CONTROL1, &reg);
 		reg |= TCPC_REG_CONTROL1_BIST_MODE2;
@@ -812,6 +866,8 @@ static int fusb302_tcpm_transmit(int port, enum tcpm_transmit_type type,
 		tcpc_read(port, TCPC_REG_CONTROL1, &reg);
 		reg &= ~TCPC_REG_CONTROL1_BIST_MODE2;
 		tcpc_write(port, TCPC_REG_CONTROL1, reg);
+		
+		i2c_master_unlock(tcpc_config[port].i2c_host_port);
 
 		break;
 	default:
@@ -827,7 +883,9 @@ static int fusb302_tcpm_get_vbus_level(int port)
 	int reg;
 
 	/* Read status register */
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
 	tcpc_read(port, TCPC_REG_STATUS0, &reg);
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
 
 	return (reg & TCPC_REG_STATUS0_VBUSOK) ? 1 : 0;
 }
@@ -842,9 +900,11 @@ void fusb302_tcpc_alert(int port)
 
 	/* reading interrupt registers clears them */
 
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
 	tcpc_read(port, TCPC_REG_INTERRUPT, &interrupt);
 	tcpc_read(port, TCPC_REG_INTERRUPTA, &interrupta);
 	tcpc_read(port, TCPC_REG_INTERRUPTB, &interruptb);
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
 
 	/*
 		* Ignore BC_LVL changes when transmitting / receiving PD,
@@ -913,6 +973,8 @@ void fusb302_tcpc_alert(int port)
 void tcpm_set_bist_test_data(int port)
 {
 	int reg;
+	
+	i2c_master_lock(tcpc_config[port].i2c_host_port);
 
 	/* Read control3 register */
 	tcpc_read(port, TCPC_REG_CONTROL3, &reg);
@@ -922,6 +984,8 @@ void tcpm_set_bist_test_data(int port)
 
 	/* Write the updated value */
 	tcpc_write(port, TCPC_REG_CONTROL3, reg);
+	
+	i2c_master_unlock(tcpc_config[port].i2c_host_port);
 }
 
 const struct tcpm_drv fusb302_tcpm_drv = {

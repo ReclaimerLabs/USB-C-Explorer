@@ -203,6 +203,7 @@ int main(void)
 	display_init();
 	i2c_init();
 	timer_init();
+	delay_ms(10);
 	// USB-C Specific - TCPM start 2
 	tcpm_init(0);
 	pd_init(0);
@@ -229,6 +230,7 @@ int main(void)
 		}
 		
 		pd_run_state_machine(0);
+		delay_ms(2);
 
 		/**
 		 * Update touch status once measurement complete flag is set.

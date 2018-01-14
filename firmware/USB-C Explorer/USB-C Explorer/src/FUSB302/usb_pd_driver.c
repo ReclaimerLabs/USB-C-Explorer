@@ -59,8 +59,10 @@ timestamp_t get_time(void)
 {
 	timestamp_t t;
 	
+	system_interrupt_enter_critical_section();
 	t.le.lo = tc_get_count_value(&tc_instance);
 	t.le.hi = g_us_timestamp_upper_32bit;
+	system_interrupt_leave_critical_section();
 	
 	return t;
 }

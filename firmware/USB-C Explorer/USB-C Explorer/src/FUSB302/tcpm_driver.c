@@ -134,17 +134,16 @@ int tcpc_xfer(int port,
 	packet.hs_master_code = 0x00;
 
 	enum status_code ret_code;
-	if ((out_size != 0) && (in_size != 0))
+	if (out_size != 0)
 	{
-		ret_code = i2c_master_write_packet_wait_no_stop(&i2c_master_instance, &packet);
-		if (STATUS_OK != ret_code)
+		if (flags & I2C_XFER_STOP)
 		{
-			return ret_code;
+			ret_code = i2c_master_write_packet_wait(&i2c_master_instance, &packet);
 		}
-	}
-	else if (out_size != 0)
-	{
-		ret_code = i2c_master_write_packet_wait(&i2c_master_instance, &packet);
+		else
+		{
+			ret_code = i2c_master_write_packet_wait_no_stop(&i2c_master_instance, &packet);
+		}
 		if (STATUS_OK != ret_code)
 		{
 			return ret_code;
@@ -160,21 +159,13 @@ int tcpc_xfer(int port,
 
 	if (in_size != 0)
 	{
-		if (flags & I2C_XFER_STOP)
+		// We always send a stop, then another start on the next call. 
+		// This avoids trying to read after sending a NACK, which indicates the end of the read. 
+		// In the future, this could be optimized by using lower level i2c calls. 
+		ret_code = i2c_master_read_packet_wait(&i2c_master_instance, &packet);
+		if (STATUS_OK != ret_code)
 		{
-			ret_code = i2c_master_read_packet_wait(&i2c_master_instance, &packet);
-			if (STATUS_OK != ret_code)
-			{
-				return ret_code;
-			}
-		}
-		else
-		{
-			ret_code = i2c_master_read_packet_wait_no_stop(&i2c_master_instance, &packet);
-			if (STATUS_OK != ret_code)
-			{
-				return ret_code;
-			}
+			return ret_code;
 		}
 	}
 
