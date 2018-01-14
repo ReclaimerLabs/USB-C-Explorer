@@ -7,6 +7,7 @@
 
 #include "usb_pd_driver.h"
 #include "usb_pd.h"
+#include "ugui.h"
 
 #ifndef ARRAY_SIZE
 #define ARRAY_SIZE(t) (sizeof(t) / sizeof(t[0]))
@@ -14,6 +15,7 @@
 
 extern struct tc_module tc_instance;
 extern uint32_t g_us_timestamp_upper_32bit;
+extern uint8_t display_buffer[DISP_MEM_SIZE];
 
 uint32_t pd_task_set_event(uint32_t event, int wait_for_reply)
 {
@@ -245,4 +247,25 @@ void pd_check_pr_role(int port, int pr_role, int flags)
 			pd_request_power_swap(port);
 	}
 #endif // if 0
+}
+
+void pd_process_source_cap_callback(int port, int cnt, uint32_t *src_caps)
+{
+	char str[256];
+	int i;
+	uint32_t ma, mv, pdo;
+	
+	memset(display_buffer, 0x00, DISP_MEM_SIZE);
+	
+	sprintf(str, "Has Power Delivery");
+	UG_PutString(0, 8, str);
+	
+	for (i = 0; i < cnt; i++)
+	{
+		pd_extract_pdo_power(src_caps[i], &ma, &mv);
+		sprintf(str, "%5.2f V, %5.2f A", (float)mv/1000, (float)ma/1000);
+		UG_PutString(0, 8*(i+2), str);
+	}
+	
+	ssd1306_write_data_n(display_buffer, DISP_MEM_SIZE);
 }

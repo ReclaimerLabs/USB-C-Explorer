@@ -185,6 +185,7 @@ void display_set_pixel(UG_S16 x, UG_S16 y, UG_COLOR color);
 void i2c_init(void);
 void timer_init(void);
 void tc_callback_overflow(void);
+void measure_nonPD_current(void);
 
 /*! \brief Main function
  *
@@ -203,10 +204,12 @@ int main(void)
 	display_init();
 	i2c_init();
 	timer_init();
-	delay_ms(10);
+	delay_ms(50);
 	// USB-C Specific - TCPM start 2
 	tcpm_init(0);
+	delay_ms(50);
 	pd_init(0);
+	delay_ms(50);
 	ioport_set_pin_dir(USBC_INT_PIN, IOPORT_DIR_INPUT);
 	// USB-C Specific - TCPM end 2
 	
@@ -215,10 +218,8 @@ int main(void)
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
 	
-	int cc1, cc2;
-	cc1 = 0;
-	cc2 = 0;
-	tcpm_get_cc(0, &cc1, &cc2);
+	measure_nonPD_current();
+	delay_ms(50);
 
 	while (1) {
 		//system_sleep();
@@ -230,6 +231,7 @@ int main(void)
 		}
 		
 		pd_run_state_machine(0);
+		
 		delay_ms(2);
 
 		/**
@@ -296,13 +298,13 @@ void display_init(void)
 	UG_Init(&gui, display_set_pixel, 128, 64);
 	UG_SelectGUI(&gui);
 	UG_FontSelect(&FONT_6X8);
-	UG_PutChar('a', 0, 0, 1, 0);
-	UG_PutChar('B', 0, 8, 1, 0);
+	//UG_PutChar('a', 0, 0, 1, 0);
+	//UG_PutChar('B', 0, 8, 1, 0);
 	
-	char str[256];
-	sprintf(str, "0x%02X", 0x2);
+	//char str[256];
+	//sprintf(str, "0x%02X", 0x2);
 	//sprintf(str, "Hello World! Hello World! Hello World!");
-	UG_PutString(0, 16, str);
+	//UG_PutString(0, 16, str);
 	
 	ssd1306_write_data_n(display_buffer, DISP_MEM_SIZE);
 }
@@ -362,4 +364,35 @@ void timer_init(void)
 void tc_callback_overflow(void)
 {
 	g_us_timestamp_upper_32bit++;
+}
+
+void measure_nonPD_current(void)
+{
+	char str[256];
+	int cc1, cc2;
+	
+	cc1 = 0;
+	cc2 = 0;
+	tcpm_get_cc(0, &cc1, &cc2);
+	
+	sprintf(str, "Non-PD Current");
+	UG_PutString(0, 8, str);
+	if ((cc1 == TYPEC_CC_VOLT_SNK_DEF) || (cc2 == TYPEC_CC_VOLT_SNK_DEF))
+	{
+		sprintf(str, "Default USB Power");
+	}
+	else if ((cc1 == TYPEC_CC_VOLT_SNK_1_5) || (cc2 == TYPEC_CC_VOLT_SNK_1_5))
+	{
+		sprintf(str, "Type-C 1.5 A");
+	}
+	else if ((cc1 == TYPEC_CC_VOLT_SNK_3_0) || (cc2 == TYPEC_CC_VOLT_SNK_3_0))
+	{
+		sprintf(str, "Type-C 3.0 A");
+	}
+	else
+	{
+		sprintf(str, "Unknown Error");
+	}
+	UG_PutString(0, 16, str);
+	ssd1306_write_data_n(display_buffer, DISP_MEM_SIZE);
 }

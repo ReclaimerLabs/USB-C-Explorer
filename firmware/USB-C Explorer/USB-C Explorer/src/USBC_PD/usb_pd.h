@@ -1008,6 +1008,15 @@ int pd_build_request(int port, uint32_t *rdo, uint32_t *ma, uint32_t *mv,
 int pd_is_max_request_allowed(void);
 
 /**
+ * Callback with source capabilities packet
+ *
+ * @param port USB-C port number
+ * @param cnt  the number of Power Data Objects.
+ * @param src_caps Power Data Objects representing the source capabilities.
+ */
+void pd_process_source_cap_callback(int port, int cnt, uint32_t *src_caps);
+
+/**
  * Process source capabilities packet
  *
  * @param port USB-C port number

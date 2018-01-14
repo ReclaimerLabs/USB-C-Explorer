@@ -1124,6 +1124,7 @@ static void handle_data_request(int port, uint16_t head,
 			pd_update_pdo_flags(port, payload[0]);
 
 			pd_process_source_cap(port, cnt, payload);
+			pd_process_source_cap_callback(port, cnt, payload);
 
 			/* Source will resend source cap on failure */
 			pd_send_request_msg(port, 1);
