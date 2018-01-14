@@ -28,7 +28,7 @@ DItemRevisionGUID=
 ReportSuppressedErrorsInMessages=0
 FSMCodingStyle=eFMSDropDownList_OneProcess
 FSMEncodingStyle=eFMSDropDownList_OneHot
-OutputPath=
+OutputPath=Project Outputs for USB-C Explorer
 LogFolderPath=
 ManagedProjectGUID=
 LinkedManagedProjectGUID=
@@ -179,7 +179,7 @@ ContentTypeGUID=
 ConfigurationType=
 
 [Generic_EDE]
-OutputDir=
+OutputDir=Project Outputs for USB-C Explorer
 
 [OutputGroup1]
 Name=Netlist Outputs
