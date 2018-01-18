@@ -251,6 +251,9 @@ void pd_process_source_cap(int port, int cnt, uint32_t *src_caps)
 #endif
 }
 
+#pragma weak pd_process_source_cap_callback
+void pd_process_source_cap_callback(int port, int cnt, uint32_t *src_caps) {}
+
 void pd_set_max_voltage(unsigned mv)
 {
 	max_request_mv = mv;

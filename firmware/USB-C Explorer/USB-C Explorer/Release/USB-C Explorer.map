@@ -1155,6 +1155,8 @@ Discarded input sections
  .text          0x00000000        0x0 src/USBC_PD/usb_pd_policy.o
  .data          0x00000000        0x0 src/USBC_PD/usb_pd_policy.o
  .bss           0x00000000        0x0 src/USBC_PD/usb_pd_policy.o
+ .text.pd_process_source_cap_callback
+                0x00000000        0x2 src/USBC_PD/usb_pd_policy.o
  .text.pd_set_max_voltage
                 0x00000000        0xc src/USBC_PD/usb_pd_policy.o
  .text.pd_get_max_voltage
