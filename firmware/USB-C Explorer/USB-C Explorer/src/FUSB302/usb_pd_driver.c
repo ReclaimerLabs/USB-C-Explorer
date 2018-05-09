@@ -30,7 +30,8 @@ uint32_t pd_task_set_event(uint32_t event, int wait_for_reply)
 }
 
 const uint32_t pd_src_pdo[] = {
-	PDO_FIXED(5000, 1500, PDO_FIXED_FLAGS),
+	PDO_FIXED( 5000, 50, PDO_FIXED_FLAGS),
+	PDO_FIXED(20000, 50, PDO_FIXED_FLAGS),
 };
 const int pd_src_pdo_cnt = ARRAY_SIZE(pd_src_pdo);
 
@@ -71,6 +72,9 @@ timestamp_t get_time(void)
 
 void pd_power_supply_reset(int port)
 {
+	port_pin_set_output_level(VBUS_5V_EN_PIN, false);
+	port_pin_set_output_level(VBUS_15V_EN_PIN, false);
+	
 	return;
 }
 
@@ -165,56 +169,24 @@ int pd_board_checks(void)
 
 int pd_set_power_supply_ready(int port)
 {
-#if 0
-	/* Disable charging */
-	gpio_set_level(GPIO_USB_C0_CHARGE_L, 1);
-
-	/* Enable VBUS source */
-	gpio_set_level(GPIO_USB_C0_5V_EN, 1);
-
-	/* notify host of power info change */
-	pd_send_host_event(PD_EVENT_POWER_CHANGE);
-#endif // if 0
+	port_pin_set_output_level(VBUS_5V_EN_PIN, true);
+	
 	return EC_SUCCESS; /* we are ready */
 }
 
 void pd_transition_voltage(int idx)
 {
-	/* No-operation: we are always 5V */
-	
-#if 0
-	timestamp_t deadline;
-	uint32_t mv = src_pdo_charge[idx - 1].mv;
-
-	/* Is this a transition to a new voltage? */
-	if (charge_port_is_active() && vbus[CHG].mv != mv) {
-		/*
-		 * Alter voltage limit on charge port, this should cause
-		 * the port to select the desired PDO.
-		 */
-		pd_set_external_voltage_limit(CHG, mv);
-
-		/* Wait for CHG transition */
-		deadline.val = get_time().val + PD_T_PS_TRANSITION;
-		CPRINTS("Waiting for CHG port transition");
-		while (charge_port_is_active() &&
-		       vbus[CHG].mv != mv &&
-		       get_time().val < deadline.val)
-			msleep(10);
-
-		if (vbus[CHG].mv != mv) {
-			CPRINTS("Missed CHG transition, resetting DUT");
-			pd_power_supply_reset(DUT);
-			return;
-		}
-
-		CPRINTS("CHG transitioned");
+	if (idx == 1)
+	{
+		port_pin_set_output_level(VBUS_5V_EN_PIN,  true);
+		port_pin_set_output_level(VBUS_15V_EN_PIN, false);
 	}
-
-	vbus[DUT].mv = vbus[CHG].mv;
-	vbus[DUT].ma = vbus[CHG].ma;
-#endif // if 0
-
+	else if (idx == 2)
+	{
+		port_pin_set_output_level(VBUS_15V_EN_PIN, true);
+		port_pin_set_output_level(VBUS_5V_EN_PIN,  false);
+	}
+	// other idx should be ignored
 }
 
 void pd_check_dr_role(int port, int dr_role, int flags)

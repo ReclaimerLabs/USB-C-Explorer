@@ -66,6 +66,9 @@
 #define DISP_SIZE_Y				64
 #define DISP_MEM_SIZE			1024
 
-#define TC_TIMESTAMP			TC4
+#define TC_TIMESTAMP				TC4
+
+#define VBUS_5V_EN_PIN			PIN_PA11
+#define VBUS_15V_EN_PIN			PIN_PA10
 
 #endif // CONF_BOARD_H

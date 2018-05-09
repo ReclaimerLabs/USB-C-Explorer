@@ -2452,7 +2452,8 @@ void pd_run_state_machine(int port)
 			/* Query capabilities of the other side */
 			res = send_source_cap(port);
 			/* packet was acked => PD capable device) */
-			if (res >= 0) {
+			// TODO: read error codes correctly
+			if (res >= 2) {
 				set_state(port,
 						PD_STATE_SRC_NEGOCIATE);
 				timeout = 10*MSEC;

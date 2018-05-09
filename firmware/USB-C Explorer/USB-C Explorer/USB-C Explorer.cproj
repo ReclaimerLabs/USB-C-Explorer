@@ -322,6 +322,8 @@
       <ToolName>J-Link</ToolName>
     </com_atmel_avrdbg_tool_samice>
     <avrtoolinterfaceclock>4000000</avrtoolinterfaceclock>
+    <ResetRule>0</ResetRule>
+    <EraseKey />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -762,7 +764,7 @@
       <SubType>compile</SubType>
     </None>
     <None Include="USB-C Explorer.qtdgn">
-      <SubType>none</SubType>
+      <SubType>compile</SubType>
       <Generator>QTouchFileGenerator</Generator>
     </None>
     <None Include="src\ASF\sam0\utils\linker_scripts\samd21\gcc\samd21e17a_flash.ld">

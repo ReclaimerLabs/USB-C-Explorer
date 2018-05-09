@@ -3,13 +3,13 @@ src/ASF/sam0/utils/cmsis/samd21/source/system_samd21.d \
  ../src/ASF/sam0/utils/cmsis/samd21/source/system_samd21.c \
  ../src/ASF/sam0/utils/cmsis/samd21/include/samd21.h \
  ../src/ASF/sam0/utils/cmsis/samd21/include/samd21e17a.h \
- d:\program\ files\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.2.1\include\stdint.h \
- d:\program\ files\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\stdint.h \
- d:\program\ files\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\machine\_default_types.h \
- d:\program\ files\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\features.h \
- d:\program\ files\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\_newlib_version.h \
- d:\program\ files\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_intsup.h \
- d:\program\ files\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_stdint.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stdint.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\stdint.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\machine\_default_types.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\features.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\_newlib_version.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_intsup.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_stdint.h \
  ../src/ASF/thirdparty/CMSIS/Include/core_cm0plus.h \
  ../src/ASF/thirdparty/CMSIS/Include/core_cmInstr.h \
  ../src/ASF/thirdparty/CMSIS/Include/core_cmFunc.h \
@@ -73,19 +73,19 @@ src/ASF/sam0/utils/cmsis/samd21/source/system_samd21.d \
 
 ../src/ASF/sam0/utils/cmsis/samd21/include/samd21e17a.h:
 
-d:\program\ files\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.2.1\include\stdint.h:
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stdint.h:
 
-d:\program\ files\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\stdint.h:
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\stdint.h:
 
-d:\program\ files\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\machine\_default_types.h:
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\machine\_default_types.h:
 
-d:\program\ files\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\features.h:
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\features.h:
 
-d:\program\ files\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\_newlib_version.h:
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\_newlib_version.h:
 
-d:\program\ files\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_intsup.h:
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_intsup.h:
 
-d:\program\ files\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_stdint.h:
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_stdint.h:
 
 ../src/ASF/thirdparty/CMSIS/Include/core_cm0plus.h:
 

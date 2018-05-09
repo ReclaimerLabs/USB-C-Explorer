@@ -23,12 +23,14 @@
 //#define CONFIG_USB_PD_GIVE_BACK
 //#define CONFIG_USB_PD_SIMPLE_DFP
 //#define CONFIG_USB_PD_TCPM_TCPCI
+//#define CONFIG_USBC_SS_MUX
+#define CONFIG_USBC_VCONN
 
 /* Default pull-up value on the USB-C ports when they are used as source. */
 #define CONFIG_USB_PD_PULLUP TYPEC_RP_USB
 
 /* Override PD_ROLE_DEFAULT in usb_pd.h */
-#define PD_ROLE_DEFAULT(port) (PD_ROLE_SINK)
+#define PD_ROLE_DEFAULT(port) (PD_ROLE_SOURCE)
 
 /* Don't automatically change roles */
 #undef CONFIG_USB_PD_INITIAL_DRP_STATE
@@ -39,8 +41,8 @@
  * delay to turn on the power supply max is ~16ms.
  * delay to turn off the power supply max is about ~180ms.
  */
-#define PD_POWER_SUPPLY_TURN_ON_DELAY  10000  /* us */
-#define PD_POWER_SUPPLY_TURN_OFF_DELAY 20000 /* us */
+#define PD_POWER_SUPPLY_TURN_ON_DELAY  1000  /* us */
+#define PD_POWER_SUPPLY_TURN_OFF_DELAY 2000 /* us */
 
 /* Define typical operating power and max power */
 #define PD_OPERATING_POWER_MW 15000

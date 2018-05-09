@@ -399,9 +399,9 @@ static int fusb302_tcpm_init(int port)
 
 	/* Turn on retries and set number of retries */
 	tcpc_read(port, TCPC_REG_CONTROL3, &reg);
-	reg |= TCPC_REG_CONTROL3_AUTO_RETRY;
-	reg |= (PD_RETRY_COUNT & 0x3) <<
-		TCPC_REG_CONTROL3_N_RETRIES_POS;
+	//reg |= TCPC_REG_CONTROL3_AUTO_RETRY;
+	//reg |= (PD_RETRY_COUNT & 0x3) <<
+	//	TCPC_REG_CONTROL3_N_RETRIES_POS;
 	tcpc_write(port, TCPC_REG_CONTROL3, reg);
 
 	/* Create interrupt masks */
@@ -910,6 +910,7 @@ void fusb302_tcpc_alert(int port)
 		* Ignore BC_LVL changes when transmitting / receiving PD,
 		* since CC level will constantly change.
 		*/
+	#if 0
 	if (state[port].rx_enable)
 		interrupt &= ~TCPC_REG_INTERRUPT_BC_LVL;
 
@@ -917,6 +918,7 @@ void fusb302_tcpc_alert(int port)
 		/* CC Status change */
 		//task_set_event(PD_PORT_TO_TASK_ID(port), PD_EVENT_CC, 0);
 	}
+	#endif
 
 	if (interrupt & TCPC_REG_INTERRUPT_COLLISION) {
 		/* packet sending collided */

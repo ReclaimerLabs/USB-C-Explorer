@@ -213,6 +213,16 @@ int main(void)
 	ioport_set_pin_dir(USBC_INT_PIN, IOPORT_DIR_INPUT);
 	// USB-C Specific - TCPM end 2
 	
+	// USB-C Specific - USB PD start 1
+	struct port_config pin;
+	port_get_config_defaults(&pin);
+	pin.direction = PORT_PIN_DIR_OUTPUT;
+	port_pin_set_config(VBUS_5V_EN_PIN, &pin);
+	port_pin_set_config(VBUS_15V_EN_PIN, &pin);
+	port_pin_set_output_level(VBUS_5V_EN_PIN, false);
+	port_pin_set_output_level(VBUS_15V_EN_PIN, false);
+	// USB-C Specific - USB PD end 1
+	
 	//system_set_sleepmode(SYSTEM_SLEEPMODE_STANDBY);
 
 	// Start USB stack to authorize VBus monitoring
@@ -220,6 +230,8 @@ int main(void)
 	
 	measure_nonPD_current();
 	delay_ms(50);
+	
+	// Set up control for Power Sources
 
 	while (1) {
 		//system_sleep();
