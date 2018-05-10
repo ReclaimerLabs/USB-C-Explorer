@@ -149,8 +149,7 @@ enum pd_rx_errors {
 #define PD_T_CHUNK_SENDER_REQ (24*MSEC) /* between 24ms and 30ms */
 #define PD_T_SEND_SOURCE_CAP  (100*MSEC) /* between 100ms and 200ms */
 #define PD_T_SINK_WAIT_CAP    (600*MSEC) /* between 310ms and 620ms */
-// TODO: double check this
-#define PD_T_SINK_TRANSITION   (1*MSEC) /* between 20ms and 35ms */
+#define PD_T_SINK_TRANSITION   (25*MSEC) /* between 20ms and 35ms */
 #define PD_T_SOURCE_ACTIVITY   (45*MSEC) /* between 40ms and 50ms */
 //#define PD_T_SENDER_RESPONSE   (30*MSEC) /* between 24ms and 30ms */
 #define PD_T_SENDER_RESPONSE   (100*MSEC) /* between 24ms and 30ms */

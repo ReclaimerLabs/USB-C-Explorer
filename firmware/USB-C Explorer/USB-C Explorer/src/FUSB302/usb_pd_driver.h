@@ -38,8 +38,6 @@
 
 /* board specific type-C power constants */
 /*
- * delay to turn on the power supply max is ~16ms.
- * delay to turn off the power supply max is about ~180ms.
  */
 #define PD_POWER_SUPPLY_TURN_ON_DELAY  1000  /* us */
 #define PD_POWER_SUPPLY_TURN_OFF_DELAY 2000 /* us */
