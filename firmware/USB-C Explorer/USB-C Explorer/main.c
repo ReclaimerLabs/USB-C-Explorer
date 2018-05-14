@@ -228,7 +228,7 @@ int main(void)
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
 	
-	measure_nonPD_current();
+	//measure_nonPD_current();
 	delay_ms(50);
 	
 	// Set up control for Power Sources

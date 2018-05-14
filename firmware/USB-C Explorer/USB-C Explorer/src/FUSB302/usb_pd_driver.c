@@ -72,9 +72,15 @@ timestamp_t get_time(void)
 
 void pd_power_supply_reset(int port)
 {
+	char str[256];
+	
 	port_pin_set_output_level(VBUS_5V_EN_PIN, false);
 	port_pin_set_output_level(VBUS_15V_EN_PIN, false);
 	
+	memset(display_buffer, 0x00, DISP_MEM_SIZE);
+	sprintf(str, "Sink Not Connected");
+	UG_PutString(0, 8, str);
+	ssd1306_write_data_n(display_buffer, DISP_MEM_SIZE);
 	return;
 }
 
@@ -169,13 +175,22 @@ int pd_board_checks(void)
 
 int pd_set_power_supply_ready(int port)
 {
+	char str[256];
+	
 	port_pin_set_output_level(VBUS_5V_EN_PIN, true);
+	
+	memset(display_buffer, 0x00, DISP_MEM_SIZE);
+	sprintf(str, "Sink Detected");
+	UG_PutString(0, 8, str);
+	sprintf(str, "Sending 5V on Vbus");
+	UG_PutString(0, 16, str);
+	ssd1306_write_data_n(display_buffer, DISP_MEM_SIZE);
 	
 	return EC_SUCCESS; /* we are ready */
 }
 
 void pd_transition_voltage(int idx)
-{
+{	
 	if (idx == 1)
 	{
 		port_pin_set_output_level(VBUS_5V_EN_PIN,  true);
@@ -225,7 +240,7 @@ void pd_process_source_cap_callback(int port, int cnt, uint32_t *src_caps)
 {
 	char str[256];
 	int i;
-	uint32_t ma, mv, pdo;
+	uint32_t ma, mv;
 	
 	memset(display_buffer, 0x00, DISP_MEM_SIZE);
 	
@@ -240,4 +255,36 @@ void pd_process_source_cap_callback(int port, int cnt, uint32_t *src_caps)
 	}
 	
 	ssd1306_write_data_n(display_buffer, DISP_MEM_SIZE);
+}
+
+int pd_board_check_request(uint32_t rdo, int pdo_cnt)
+{
+	int idx = RDO_POS(rdo);
+	char str[256];
+	uint32_t ma;
+
+	if ((0 == idx) || (idx > pdo_cnt)) {
+		return EC_ERROR_INVAL;
+	}
+	
+	memset(display_buffer, 0x00, DISP_MEM_SIZE);
+	sprintf(str, "Sink Connected");
+	UG_PutString(0, 8, str);
+	sprintf(str, "New Vbus Requested");
+	UG_PutString(0, 16, str);
+	
+	if (idx == 1) {
+		sprintf(str, " 5.0 V");
+	} else if (idx == 2) {
+		sprintf(str, "20.0 V");
+	}
+	
+	// Max Current
+	ma = (rdo & 0x3FF)*10;
+	sprintf(str, "%s, %i mA", str, ma);
+	UG_PutString(0, 24, str);
+	
+	ssd1306_write_data_n(display_buffer, DISP_MEM_SIZE);
+	
+	return EC_SUCCESS;
 }
