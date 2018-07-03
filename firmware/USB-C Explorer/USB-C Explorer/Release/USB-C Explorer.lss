@@ -11576,12 +11576,12 @@ Disassembly of section .text:
     9e08:	0028      	movs	r0, r5
     9e0a:	4b3c      	ldr	r3, [pc, #240]	; (9efc <pd_run_state_machine+0x2e8>)
     9e0c:	4798      	blx	r3
-    9e0e:	0031      	movs	r1, r6
-    9e10:	0028      	movs	r0, r5
-    9e12:	4b3b      	ldr	r3, [pc, #236]	; (9f00 <pd_run_state_machine+0x2ec>)
-    9e14:	0022      	movs	r2, r4
-    9e16:	4798      	blx	r3
-    9e18:	2101      	movs	r1, #1
+    9e0e:	2101      	movs	r1, #1
+    9e10:	4b3b      	ldr	r3, [pc, #236]	; (9f00 <pd_run_state_machine+0x2ec>)
+    9e12:	0028      	movs	r0, r5
+    9e14:	4798      	blx	r3
+    9e16:	0022      	movs	r2, r4
+    9e18:	0031      	movs	r1, r6
     9e1a:	0028      	movs	r0, r5
     9e1c:	4b39      	ldr	r3, [pc, #228]	; (9f04 <pd_run_state_machine+0x2f0>)
     9e1e:	4798      	blx	r3
@@ -11679,8 +11679,8 @@ Disassembly of section .text:
     9ef4:	000061a8 	.word	0x000061a8
     9ef8:	00009855 	.word	0x00009855
     9efc:	000096a1 	.word	0x000096a1
-    9f00:	00008895 	.word	0x00008895
-    9f04:	00009935 	.word	0x00009935
+    9f00:	00009935 	.word	0x00009935
+    9f04:	00008895 	.word	0x00008895
     9f08:	00009459 	.word	0x00009459
     9f0c:	00009791 	.word	0x00009791
     9f10:	4bbb      	ldr	r3, [pc, #748]	; (a200 <pd_run_state_machine+0x5ec>)
@@ -11827,12 +11827,12 @@ Disassembly of section .text:
     a04a:	d900      	bls.n	a04e <pd_run_state_machine+0x43a>
     a04c:	e773      	b.n	9f36 <pd_run_state_machine+0x322>
     a04e:	f004 fe37 	bl	ecc0 <__gnu_thumb1_case_shi>
-    a052:	008e      	.short	0x008e
-    a054:	ff720060 	.word	0xff720060
+    a052:	008d      	.short	0x008d
+    a054:	ff72005f 	.word	0xff72005f
     a058:	000b0035 	.word	0x000b0035
     a05c:	0114001a 	.word	0x0114001a
     a060:	012c00fd 	.word	0x012c00fd
-    a064:	00c40060 	.word	0x00c40060
+    a064:	00c3005f 	.word	0x00c3005f
     a068:	0028      	movs	r0, r5
     a06a:	4b70      	ldr	r3, [pc, #448]	; (a22c <pd_run_state_machine+0x618>)
     a06c:	4798      	blx	r3
@@ -11908,135 +11908,135 @@ Disassembly of section .text:
     a0f8:	2b00      	cmp	r3, #0
     a0fa:	d000      	beq.n	a0fe <pd_run_state_machine+0x4ea>
     a0fc:	e71b      	b.n	9f36 <pd_run_state_machine+0x322>
-    a0fe:	0028      	movs	r0, r5
-    a100:	2108      	movs	r1, #8
+    a0fe:	2108      	movs	r1, #8
+    a100:	0028      	movs	r0, r5
     a102:	4b41      	ldr	r3, [pc, #260]	; (a208 <pd_run_state_machine+0x5f4>)
     a104:	4798      	blx	r3
     a106:	6b62      	ldr	r2, [r4, #52]	; 0x34
     a108:	6b21      	ldr	r1, [r4, #48]	; 0x30
     a10a:	0028      	movs	r0, r5
     a10c:	4b4c      	ldr	r3, [pc, #304]	; (a240 <pd_run_state_machine+0x62c>)
-    a10e:	4798      	blx	r3
-    a110:	e711      	b.n	9f36 <pd_run_state_machine+0x322>
-    a112:	4b3b      	ldr	r3, [pc, #236]	; (a200 <pd_run_state_machine+0x5ec>)
-    a114:	01ea      	lsls	r2, r5, #7
-    a116:	189c      	adds	r4, r3, r2
-    a118:	7923      	ldrb	r3, [r4, #4]
-    a11a:	2b19      	cmp	r3, #25
-    a11c:	d106      	bne.n	a12c <pd_run_state_machine+0x518>
-    a11e:	4b38      	ldr	r3, [pc, #224]	; (a200 <pd_run_state_machine+0x5ec>)
-    a120:	5c9b      	ldrb	r3, [r3, r2]
-    a122:	2108      	movs	r1, #8
-    a124:	2b00      	cmp	r3, #0
-    a126:	d000      	beq.n	a12a <pd_run_state_machine+0x516>
-    a128:	e6a2      	b.n	9e70 <pd_run_state_machine+0x25c>
-    a12a:	e699      	b.n	9e60 <pd_run_state_machine+0x24c>
-    a12c:	2b1a      	cmp	r3, #26
-    a12e:	d100      	bne.n	a132 <pd_run_state_machine+0x51e>
-    a130:	e69e      	b.n	9e70 <pd_run_state_machine+0x25c>
-    a132:	2b09      	cmp	r3, #9
-    a134:	d101      	bne.n	a13a <pd_run_state_machine+0x526>
-    a136:	2108      	movs	r1, #8
-    a138:	e692      	b.n	9e60 <pd_run_state_machine+0x24c>
-    a13a:	2b06      	cmp	r3, #6
-    a13c:	d000      	beq.n	a140 <pd_run_state_machine+0x52c>
-    a13e:	e6fa      	b.n	9f36 <pd_run_state_machine+0x322>
-    a140:	68a3      	ldr	r3, [r4, #8]
-    a142:	065b      	lsls	r3, r3, #25
-    a144:	d5cc      	bpl.n	a0e0 <pd_run_state_machine+0x4cc>
-    a146:	2f0c      	cmp	r7, #12
-    a148:	d1f5      	bne.n	a136 <pd_run_state_machine+0x522>
-    a14a:	2301      	movs	r3, #1
-    a14c:	63a3      	str	r3, [r4, #56]	; 0x38
-    a14e:	2300      	movs	r3, #0
-    a150:	a806      	add	r0, sp, #24
-    a152:	63e3      	str	r3, [r4, #60]	; 0x3c
-    a154:	4b30      	ldr	r3, [pc, #192]	; (a218 <pd_run_state_machine+0x604>)
-    a156:	4798      	blx	r3
-    a158:	9806      	ldr	r0, [sp, #24]
-    a15a:	9907      	ldr	r1, [sp, #28]
-    a15c:	2300      	movs	r3, #0
-    a15e:	4a2f      	ldr	r2, [pc, #188]	; (a21c <pd_run_state_machine+0x608>)
-    a160:	1812      	adds	r2, r2, r0
-    a162:	414b      	adcs	r3, r1
-    a164:	6122      	str	r2, [r4, #16]
-    a166:	6163      	str	r3, [r4, #20]
-    a168:	2308      	movs	r3, #8
-    a16a:	71e3      	strb	r3, [r4, #7]
-    a16c:	e6e3      	b.n	9f36 <pd_run_state_machine+0x322>
-    a16e:	4b24      	ldr	r3, [pc, #144]	; (a200 <pd_run_state_machine+0x5ec>)
-    a170:	01ea      	lsls	r2, r5, #7
-    a172:	189b      	adds	r3, r3, r2
-    a174:	791a      	ldrb	r2, [r3, #4]
-    a176:	2a1e      	cmp	r2, #30
-    a178:	d10e      	bne.n	a198 <pd_run_state_machine+0x584>
-    a17a:	6899      	ldr	r1, [r3, #8]
-    a17c:	3262      	adds	r2, #98	; 0x62
-    a17e:	4391      	bics	r1, r2
-    a180:	2200      	movs	r2, #0
-    a182:	6099      	str	r1, [r3, #8]
-    a184:	709a      	strb	r2, [r3, #2]
-    a186:	4b1e      	ldr	r3, [pc, #120]	; (a200 <pd_run_state_machine+0x5ec>)
-    a188:	01ea      	lsls	r2, r5, #7
-    a18a:	5c9b      	ldrb	r3, [r3, r2]
-    a18c:	2105      	movs	r1, #5
-    a18e:	2b00      	cmp	r3, #0
-    a190:	d100      	bne.n	a194 <pd_run_state_machine+0x580>
-    a192:	e665      	b.n	9e60 <pd_run_state_machine+0x24c>
-    a194:	310d      	adds	r1, #13
-    a196:	e663      	b.n	9e60 <pd_run_state_machine+0x24c>
-    a198:	2a19      	cmp	r2, #25
-    a19a:	d105      	bne.n	a1a8 <pd_run_state_machine+0x594>
-    a19c:	4b29      	ldr	r3, [pc, #164]	; (a244 <pd_run_state_machine+0x630>)
-    a19e:	0028      	movs	r0, r5
-    a1a0:	4798      	blx	r3
-    a1a2:	4b17      	ldr	r3, [pc, #92]	; (a200 <pd_run_state_machine+0x5ec>)
-    a1a4:	01ea      	lsls	r2, r5, #7
-    a1a6:	e7bb      	b.n	a120 <pd_run_state_machine+0x50c>
-    a1a8:	2a1a      	cmp	r2, #26
-    a1aa:	d105      	bne.n	a1b8 <pd_run_state_machine+0x5a4>
-    a1ac:	6899      	ldr	r1, [r3, #8]
-    a1ae:	3226      	adds	r2, #38	; 0x26
-    a1b0:	4391      	bics	r1, r2
-    a1b2:	6099      	str	r1, [r3, #8]
-    a1b4:	211b      	movs	r1, #27
-    a1b6:	e653      	b.n	9e60 <pd_run_state_machine+0x24c>
-    a1b8:	2a09      	cmp	r2, #9
-    a1ba:	d105      	bne.n	a1c8 <pd_run_state_machine+0x5b4>
-    a1bc:	6899      	ldr	r1, [r3, #8]
-    a1be:	3237      	adds	r2, #55	; 0x37
-    a1c0:	4391      	bics	r1, r2
-    a1c2:	6099      	str	r1, [r3, #8]
-    a1c4:	210a      	movs	r1, #10
-    a1c6:	e64b      	b.n	9e60 <pd_run_state_machine+0x24c>
-    a1c8:	2a06      	cmp	r2, #6
-    a1ca:	d000      	beq.n	a1ce <pd_run_state_machine+0x5ba>
-    a1cc:	e6b3      	b.n	9f36 <pd_run_state_machine+0x322>
-    a1ce:	6899      	ldr	r1, [r3, #8]
-    a1d0:	323a      	adds	r2, #58	; 0x3a
-    a1d2:	430a      	orrs	r2, r1
-    a1d4:	609a      	str	r2, [r3, #8]
-    a1d6:	2107      	movs	r1, #7
-    a1d8:	e642      	b.n	9e60 <pd_run_state_machine+0x24c>
-    a1da:	4b09      	ldr	r3, [pc, #36]	; (a200 <pd_run_state_machine+0x5ec>)
-    a1dc:	01ea      	lsls	r2, r5, #7
-    a1de:	189b      	adds	r3, r3, r2
-    a1e0:	2200      	movs	r2, #0
-    a1e2:	709a      	strb	r2, [r3, #2]
-    a1e4:	4b06      	ldr	r3, [pc, #24]	; (a200 <pd_run_state_machine+0x5ec>)
-    a1e6:	01ea      	lsls	r2, r5, #7
-    a1e8:	5c9b      	ldrb	r3, [r3, r2]
-    a1ea:	2105      	movs	r1, #5
-    a1ec:	2b00      	cmp	r3, #0
-    a1ee:	d000      	beq.n	a1f2 <pd_run_state_machine+0x5de>
-    a1f0:	310d      	adds	r1, #13
-    a1f2:	0028      	movs	r0, r5
-    a1f4:	4b04      	ldr	r3, [pc, #16]	; (a208 <pd_run_state_machine+0x5f4>)
-    a1f6:	4798      	blx	r3
-    a1f8:	2103      	movs	r1, #3
-    a1fa:	0028      	movs	r0, r5
-    a1fc:	4b12      	ldr	r3, [pc, #72]	; (a248 <pd_run_state_machine+0x634>)
-    a1fe:	e60e      	b.n	9e1e <pd_run_state_machine+0x20a>
+    a10e:	e686      	b.n	9e1e <pd_run_state_machine+0x20a>
+    a110:	4b3b      	ldr	r3, [pc, #236]	; (a200 <pd_run_state_machine+0x5ec>)
+    a112:	01ea      	lsls	r2, r5, #7
+    a114:	189c      	adds	r4, r3, r2
+    a116:	7923      	ldrb	r3, [r4, #4]
+    a118:	2b19      	cmp	r3, #25
+    a11a:	d106      	bne.n	a12a <pd_run_state_machine+0x516>
+    a11c:	4b38      	ldr	r3, [pc, #224]	; (a200 <pd_run_state_machine+0x5ec>)
+    a11e:	5c9b      	ldrb	r3, [r3, r2]
+    a120:	2108      	movs	r1, #8
+    a122:	2b00      	cmp	r3, #0
+    a124:	d000      	beq.n	a128 <pd_run_state_machine+0x514>
+    a126:	e6a3      	b.n	9e70 <pd_run_state_machine+0x25c>
+    a128:	e69a      	b.n	9e60 <pd_run_state_machine+0x24c>
+    a12a:	2b1a      	cmp	r3, #26
+    a12c:	d100      	bne.n	a130 <pd_run_state_machine+0x51c>
+    a12e:	e69f      	b.n	9e70 <pd_run_state_machine+0x25c>
+    a130:	2b09      	cmp	r3, #9
+    a132:	d101      	bne.n	a138 <pd_run_state_machine+0x524>
+    a134:	2108      	movs	r1, #8
+    a136:	e693      	b.n	9e60 <pd_run_state_machine+0x24c>
+    a138:	2b06      	cmp	r3, #6
+    a13a:	d000      	beq.n	a13e <pd_run_state_machine+0x52a>
+    a13c:	e6fb      	b.n	9f36 <pd_run_state_machine+0x322>
+    a13e:	68a3      	ldr	r3, [r4, #8]
+    a140:	065b      	lsls	r3, r3, #25
+    a142:	d5cd      	bpl.n	a0e0 <pd_run_state_machine+0x4cc>
+    a144:	2f0c      	cmp	r7, #12
+    a146:	d1f5      	bne.n	a134 <pd_run_state_machine+0x520>
+    a148:	2301      	movs	r3, #1
+    a14a:	63a3      	str	r3, [r4, #56]	; 0x38
+    a14c:	2300      	movs	r3, #0
+    a14e:	a806      	add	r0, sp, #24
+    a150:	63e3      	str	r3, [r4, #60]	; 0x3c
+    a152:	4b31      	ldr	r3, [pc, #196]	; (a218 <pd_run_state_machine+0x604>)
+    a154:	4798      	blx	r3
+    a156:	9806      	ldr	r0, [sp, #24]
+    a158:	9907      	ldr	r1, [sp, #28]
+    a15a:	2300      	movs	r3, #0
+    a15c:	4a2f      	ldr	r2, [pc, #188]	; (a21c <pd_run_state_machine+0x608>)
+    a15e:	1812      	adds	r2, r2, r0
+    a160:	414b      	adcs	r3, r1
+    a162:	6122      	str	r2, [r4, #16]
+    a164:	6163      	str	r3, [r4, #20]
+    a166:	2308      	movs	r3, #8
+    a168:	71e3      	strb	r3, [r4, #7]
+    a16a:	e6e4      	b.n	9f36 <pd_run_state_machine+0x322>
+    a16c:	4b24      	ldr	r3, [pc, #144]	; (a200 <pd_run_state_machine+0x5ec>)
+    a16e:	01ea      	lsls	r2, r5, #7
+    a170:	189b      	adds	r3, r3, r2
+    a172:	791a      	ldrb	r2, [r3, #4]
+    a174:	2a1e      	cmp	r2, #30
+    a176:	d10e      	bne.n	a196 <pd_run_state_machine+0x582>
+    a178:	6899      	ldr	r1, [r3, #8]
+    a17a:	3262      	adds	r2, #98	; 0x62
+    a17c:	4391      	bics	r1, r2
+    a17e:	2200      	movs	r2, #0
+    a180:	6099      	str	r1, [r3, #8]
+    a182:	709a      	strb	r2, [r3, #2]
+    a184:	4b1e      	ldr	r3, [pc, #120]	; (a200 <pd_run_state_machine+0x5ec>)
+    a186:	01ea      	lsls	r2, r5, #7
+    a188:	5c9b      	ldrb	r3, [r3, r2]
+    a18a:	2105      	movs	r1, #5
+    a18c:	2b00      	cmp	r3, #0
+    a18e:	d100      	bne.n	a192 <pd_run_state_machine+0x57e>
+    a190:	e666      	b.n	9e60 <pd_run_state_machine+0x24c>
+    a192:	310d      	adds	r1, #13
+    a194:	e664      	b.n	9e60 <pd_run_state_machine+0x24c>
+    a196:	2a19      	cmp	r2, #25
+    a198:	d105      	bne.n	a1a6 <pd_run_state_machine+0x592>
+    a19a:	4b2a      	ldr	r3, [pc, #168]	; (a244 <pd_run_state_machine+0x630>)
+    a19c:	0028      	movs	r0, r5
+    a19e:	4798      	blx	r3
+    a1a0:	4b17      	ldr	r3, [pc, #92]	; (a200 <pd_run_state_machine+0x5ec>)
+    a1a2:	01ea      	lsls	r2, r5, #7
+    a1a4:	e7bb      	b.n	a11e <pd_run_state_machine+0x50a>
+    a1a6:	2a1a      	cmp	r2, #26
+    a1a8:	d105      	bne.n	a1b6 <pd_run_state_machine+0x5a2>
+    a1aa:	6899      	ldr	r1, [r3, #8]
+    a1ac:	3226      	adds	r2, #38	; 0x26
+    a1ae:	4391      	bics	r1, r2
+    a1b0:	6099      	str	r1, [r3, #8]
+    a1b2:	211b      	movs	r1, #27
+    a1b4:	e654      	b.n	9e60 <pd_run_state_machine+0x24c>
+    a1b6:	2a09      	cmp	r2, #9
+    a1b8:	d105      	bne.n	a1c6 <pd_run_state_machine+0x5b2>
+    a1ba:	6899      	ldr	r1, [r3, #8]
+    a1bc:	3237      	adds	r2, #55	; 0x37
+    a1be:	4391      	bics	r1, r2
+    a1c0:	6099      	str	r1, [r3, #8]
+    a1c2:	210a      	movs	r1, #10
+    a1c4:	e64c      	b.n	9e60 <pd_run_state_machine+0x24c>
+    a1c6:	2a06      	cmp	r2, #6
+    a1c8:	d000      	beq.n	a1cc <pd_run_state_machine+0x5b8>
+    a1ca:	e6b4      	b.n	9f36 <pd_run_state_machine+0x322>
+    a1cc:	6899      	ldr	r1, [r3, #8]
+    a1ce:	323a      	adds	r2, #58	; 0x3a
+    a1d0:	430a      	orrs	r2, r1
+    a1d2:	609a      	str	r2, [r3, #8]
+    a1d4:	2107      	movs	r1, #7
+    a1d6:	e643      	b.n	9e60 <pd_run_state_machine+0x24c>
+    a1d8:	4b09      	ldr	r3, [pc, #36]	; (a200 <pd_run_state_machine+0x5ec>)
+    a1da:	01ea      	lsls	r2, r5, #7
+    a1dc:	189b      	adds	r3, r3, r2
+    a1de:	2200      	movs	r2, #0
+    a1e0:	709a      	strb	r2, [r3, #2]
+    a1e2:	4b07      	ldr	r3, [pc, #28]	; (a200 <pd_run_state_machine+0x5ec>)
+    a1e4:	01ea      	lsls	r2, r5, #7
+    a1e6:	5c9b      	ldrb	r3, [r3, r2]
+    a1e8:	2105      	movs	r1, #5
+    a1ea:	2b00      	cmp	r3, #0
+    a1ec:	d000      	beq.n	a1f0 <pd_run_state_machine+0x5dc>
+    a1ee:	310d      	adds	r1, #13
+    a1f0:	0028      	movs	r0, r5
+    a1f2:	4b05      	ldr	r3, [pc, #20]	; (a208 <pd_run_state_machine+0x5f4>)
+    a1f4:	4798      	blx	r3
+    a1f6:	2103      	movs	r1, #3
+    a1f8:	0028      	movs	r0, r5
+    a1fa:	4b13      	ldr	r3, [pc, #76]	; (a248 <pd_run_state_machine+0x634>)
+    a1fc:	4798      	blx	r3
+    a1fe:	e69a      	b.n	9f36 <pd_run_state_machine+0x322>
     a200:	20000df8 	.word	0x20000df8
     a204:	00009855 	.word	0x00009855
     a208:	000098c9 	.word	0x000098c9
@@ -12077,7 +12077,7 @@ Disassembly of section .text:
     a270:	5c9b      	ldrb	r3, [r3, r2]
     a272:	210a      	movs	r1, #10
     a274:	2b00      	cmp	r3, #0
-    a276:	d19d      	bne.n	a1b4 <pd_run_state_machine+0x5a0>
+    a276:	d19c      	bne.n	a1b2 <pd_run_state_machine+0x59e>
     a278:	e5f2      	b.n	9e60 <pd_run_state_machine+0x24c>
     a27a:	4bb5      	ldr	r3, [pc, #724]	; (a550 <pd_run_state_machine+0x93c>)
     a27c:	01ea      	lsls	r2, r5, #7
@@ -12104,7 +12104,7 @@ Disassembly of section .text:
     a2a6:	4798      	blx	r3
     a2a8:	e645      	b.n	9f36 <pd_run_state_machine+0x322>
     a2aa:	2104      	movs	r1, #4
-    a2ac:	e7a5      	b.n	a1fa <pd_run_state_machine+0x5e6>
+    a2ac:	e7a4      	b.n	a1f8 <pd_run_state_machine+0x5e4>
     a2ae:	4bad      	ldr	r3, [pc, #692]	; (a564 <pd_run_state_machine+0x950>)
     a2b0:	0028      	movs	r0, r5
     a2b2:	6033      	str	r3, [r6, #0]
