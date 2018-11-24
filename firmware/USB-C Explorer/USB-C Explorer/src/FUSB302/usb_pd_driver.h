@@ -17,7 +17,7 @@
 #define CONFIG_CHARGE_MANAGER
 //#define CONFIG_USBC_BACKWARDS_COMPATIBLE_DFP
 //#define CONFIG_USBC_VCONN_SWAP
-//#define CONFIG_USB_PD_ALT_MODE
+#define CONFIG_USB_PD_ALT_MODE
 //#define CONFIG_USB_PD_CHROMEOS
 #define CONFIG_USB_PD_DUAL_ROLE
 //#define CONFIG_USB_PD_GIVE_BACK
@@ -50,6 +50,14 @@
 
 #define PDO_FIXED_FLAGS (PDO_FIXED_DUAL_ROLE | PDO_FIXED_DATA_SWAP |\
 PDO_FIXED_COMM_CAP)
+
+/* USB configuration */
+#define CONFIG_USB_PID 0x502f // Stolen, so should change for anything useful
+#define CONFIG_USB_BCD_DEV 0x0001 /* v 0.01 */
+
+/* Optional features */
+#define CONFIG_USB_PD_IDENTITY_HW_VERS 1
+#define CONFIG_USB_PD_IDENTITY_SW_VERS 1
 
 #define usleep(us) (delay_us(us))
 #define msleep(us) (delay_ms(us))
