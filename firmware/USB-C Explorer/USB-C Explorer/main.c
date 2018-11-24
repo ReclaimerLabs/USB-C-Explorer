@@ -250,6 +250,8 @@ int main(void)
 
 void display_init(void)
 {
+	char str[256];
+	
 	ssd1306_init();
 
 	// 1/64 Duty (0x0F~0x3F)
@@ -283,6 +285,12 @@ void display_init(void)
 		memset(display_buffer[i], 0x00, DISP_MEM_SIZE);
 		ssd1306_write_data_n(display_buffer[i], DISP_MEM_SIZE);
 	}
+		
+	display_screen = SCREEN_ALTMODE;
+	sprintf(str, "No Alt Mode");
+	UG_PutString(0, 8, str);
+	display_screen = SCREEN_POWER;
+	display_needs_update = 1;
 	
 	display_screen = 0;
 	display_screen_last = 0;

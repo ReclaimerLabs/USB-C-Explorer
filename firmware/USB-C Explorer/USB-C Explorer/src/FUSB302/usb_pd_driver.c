@@ -204,7 +204,6 @@ void pd_process_source_cap_callback(int port, int cnt, uint32_t *src_caps)
 		UG_PutString(0, 8*(i+2), str);
 	}
 	
-	//ssd1306_write_data_n(display_buffer[SCREEN_POWER], DISP_MEM_SIZE);
 	display_screen = old_display;
 	display_needs_update = 1;
 }
@@ -303,6 +302,8 @@ static int dp_config(int port, uint32_t *payload)
 static int svdm_enter_mode(int port, uint32_t *payload)
 {
 	int rv = 0; /* will generate a NAK */
+	char str[256];
+	uint8_t old_display;
 
 	/* SID & mode request is valid */
 	if ((PD_VDO_VID(payload[0]) == USB_SID_DISPLAYPORT) &&
@@ -322,6 +323,16 @@ static int svdm_enter_mode(int port, uint32_t *payload)
 		 * Billboard class.  If so we should disconnect.
 		 */
 		;//usb_disconnect();
+
+	old_display = display_screen;
+	display_screen = SCREEN_ALTMODE;
+	memset(display_buffer[SCREEN_ALTMODE], 0x00, DISP_MEM_SIZE);
+	
+	sprintf(str, "Requested Alt Mode");
+	UG_PutString(0, 8, str);
+	
+	display_screen = old_display;
+	display_needs_update = 1;
 
 	return rv;
 }
