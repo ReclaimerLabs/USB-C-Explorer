@@ -214,12 +214,12 @@ int main(void)
 	// USB-C Specific - TCPM end 2
 	
 	//system_set_sleepmode(SYSTEM_SLEEPMODE_STANDBY);
-
-	// Start USB stack to authorize VBus monitoring
-	udc_start();
 	
 	measure_nonPD_current();
 	delay_ms(50);
+
+	// Start USB stack to authorize VBus monitoring
+	udc_start();
 
 	while (1) {
 		//system_sleep();
@@ -379,7 +379,37 @@ void measure_nonPD_current(void)
 	UG_PutString(0, 8, str);
 	if ((cc1 == TYPEC_CC_VOLT_SNK_DEF) || (cc2 == TYPEC_CC_VOLT_SNK_DEF))
 	{
-		sprintf(str, "Default USB Power");
+		// Primary Detection
+		// Drive DP high, measure DM
+		// If low, regular port, otherwise some sort of charging port
+		ioport_set_pin_dir(USB20_DP_PIN, IOPORT_DIR_OUTPUT);
+		ioport_set_pin_level(USB20_DP_PIN, IOPORT_PIN_LEVEL_HIGH);
+		ioport_set_pin_dir(USB20_DM_PIN, IOPORT_DIR_INPUT);
+		//ioport_set_pin_mode(USB20_DP_PIN, IOPORT_MODE_PULLUP);
+		delay_ms(1);
+		bool usb_dp_value = ioport_get_pin_level(USB20_DM_PIN);
+		if (usb_dp_value == IOPORT_PIN_LEVEL_HIGH)
+		{
+			// Some sort of charging port
+			// Drive DM high, measure DP
+			// If high, Dedicated Charging Port, otherwise, Charging Downstream Port
+			ioport_set_pin_dir(USB20_DM_PIN, IOPORT_DIR_OUTPUT);
+			ioport_set_pin_level(USB20_DM_PIN, IOPORT_PIN_LEVEL_HIGH);
+			ioport_set_pin_dir(USB20_DP_PIN, IOPORT_DIR_INPUT);
+			bool usb_dp_value = ioport_get_pin_level(USB20_DP_PIN);
+			if (usb_dp_value == IOPORT_PIN_LEVEL_HIGH)
+			{
+				sprintf(str, "Dedicated Charging Port");
+			}
+			else
+			{
+				sprintf(str, "Charging Downstream Port");
+			}
+		} 
+		else
+		{
+			sprintf(str, "Default USB Power");
+		}
 	}
 	else if ((cc1 == TYPEC_CC_VOLT_SNK_1_5) || (cc2 == TYPEC_CC_VOLT_SNK_1_5))
 	{
