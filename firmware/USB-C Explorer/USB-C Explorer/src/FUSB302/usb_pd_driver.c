@@ -15,7 +15,8 @@
 
 extern struct tc_module tc_instance;
 extern uint32_t g_us_timestamp_upper_32bit;
-extern uint8_t display_buffer[DISP_MEM_SIZE];
+extern uint8_t display_buffer[MAX_SCREENS][DISP_MEM_SIZE];
+extern uint8_t display_screen, display_needs_update;
 
 uint32_t pd_task_set_event(uint32_t event, int wait_for_reply)
 {
@@ -187,8 +188,11 @@ void pd_process_source_cap_callback(int port, int cnt, uint32_t *src_caps)
 	char str[256];
 	int i;
 	uint32_t ma, mv, pdo;
-	
-	memset(display_buffer, 0x00, DISP_MEM_SIZE);
+	uint8_t old_display;
+
+	old_display = display_screen;
+	display_screen = SCREEN_POWER;
+	memset(display_buffer[SCREEN_POWER], 0x00, DISP_MEM_SIZE);
 	
 	sprintf(str, "Has Power Delivery");
 	UG_PutString(0, 8, str);
@@ -200,7 +204,9 @@ void pd_process_source_cap_callback(int port, int cnt, uint32_t *src_caps)
 		UG_PutString(0, 8*(i+2), str);
 	}
 	
-	ssd1306_write_data_n(display_buffer, DISP_MEM_SIZE);
+	//ssd1306_write_data_n(display_buffer[SCREEN_POWER], DISP_MEM_SIZE);
+	display_screen = old_display;
+	display_needs_update = 1;
 }
 
 /* ----------------- Vendor Defined Messages ------------------ */

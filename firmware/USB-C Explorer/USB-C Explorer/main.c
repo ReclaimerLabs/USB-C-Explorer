@@ -77,8 +77,10 @@ const struct tcpc_config_t tcpc_config[CONFIG_USB_PD_PORT_COUNT] = {
 };
 // USB-C Specific - TCPM end 1
 
-uint8_t display_buffer[DISP_MEM_SIZE];
+uint8_t display_screen, display_screen_last, display_needs_update;
+uint8_t display_buffer[MAX_SCREENS][DISP_MEM_SIZE];
 UG_GUI gui;
+timestamp_t last_button_timestamp;
 
 /*
  * switch_main_clock 
@@ -186,6 +188,7 @@ void i2c_init(void);
 void timer_init(void);
 void tc_callback_overflow(void);
 void measure_nonPD_current(void);
+void extint_detection_callback(void);
 
 /*! \brief Main function
  *
@@ -222,8 +225,6 @@ int main(void)
 	udc_start();
 
 	while (1) {
-		//system_sleep();
-
 		touch_sensors_measure();
 		
 		if (!ioport_get_pin_level(USBC_INT_PIN)) {
@@ -232,38 +233,18 @@ int main(void)
 		
 		pd_run_state_machine(0);
 		
+		if (display_screen != display_screen_last)
+		{
+			ssd1306_write_data_n(display_buffer[display_screen], DISP_MEM_SIZE);
+			display_screen_last = display_screen;
+		}
+		if (display_needs_update)
+		{
+			ssd1306_write_data_n(display_buffer[display_screen], DISP_MEM_SIZE);
+			display_needs_update = 0;
+		}
+		
 		delay_ms(2);
-
-		/**
-		 * Update touch status once measurement complete flag is set.
-		 */
-
-		/**
-		 * Self Cap method
-		 * if ((p_selfcap_measure_data->measurement_done_touch == 1u))
-		 * for self cap
-		 * Touch sensor ON/OFF status or rotor/slider position.
-		 *
-		 * Self Cap method
-		 * uint8_t sensor_state =
-		 * GET_SELFCAP_SENSOR_STATE(SENSOR_NUMBER);
-		 * uint8_t rotor_slider_position =
-		 * GET_SELFCAP_ROTOR_SLIDER_POSITION(SENSOR_NUMBER);
-		 *
-		 */
-
-		/**
-		 * Mutual Cap method
-		 * if ((p_mutlcap_measure_data->measurement_done_touch == 1u))
-		 * for mutual cap
-		 * Touch sensor ON/OFF status or rotor/slider position.
-		 *
-		 *
-		 * uint8_t sensor_state =
-		 * GET_MUTLCAP_SENSOR_STATE(SENSOR_NUMBER);
-		 * uint8_t rotor_slider_position =
-		 * GET_MUTLCAP_ROTOR_SLIDER_POSITION(SENSOR_NUMBER);
-		 */
 	}
 }
 
@@ -292,21 +273,62 @@ void display_init(void)
 	// set normal display
 	ssd1306_write_command(SSD1306_CMD_SET_NORMAL_DISPLAY);
 	
-	memset(display_buffer, 0x00, DISP_MEM_SIZE);
-	ssd1306_write_data_n(display_buffer, DISP_MEM_SIZE);
-
 	UG_Init(&gui, display_set_pixel, 128, 64);
 	UG_SelectGUI(&gui);
 	UG_FontSelect(&FONT_6X8);
-	//UG_PutChar('a', 0, 0, 1, 0);
-	//UG_PutChar('B', 0, 8, 1, 0);
 	
-	//char str[256];
-	//sprintf(str, "0x%02X", 0x2);
-	//sprintf(str, "Hello World! Hello World! Hello World!");
-	//UG_PutString(0, 16, str);
+	int i;
+	for(i=0; i < MAX_SCREENS; i++)
+	{
+		memset(display_buffer[i], 0x00, DISP_MEM_SIZE);
+		ssd1306_write_data_n(display_buffer[i], DISP_MEM_SIZE);
+	}
 	
-	ssd1306_write_data_n(display_buffer, DISP_MEM_SIZE);
+	display_screen = 0;
+	display_screen_last = 0;
+	display_needs_update = 0;
+	struct extint_chan_conf config_extint_chan;
+	extint_chan_get_config_defaults(&config_extint_chan);
+	config_extint_chan.gpio_pin           = SW_USER_EIC_PIN;
+	config_extint_chan.gpio_pin_mux       = SW_USER_EIC_MUX;
+	config_extint_chan.gpio_pin_pull      = EXTINT_PULL_UP;
+	config_extint_chan.detection_criteria = EXTINT_DETECT_FALLING;
+	extint_chan_set_config(SW_USER_EIC_LINE, &config_extint_chan);
+	last_button_timestamp.val = 0;
+	extint_register_callback(extint_detection_callback,
+		SW_USER_EIC_LINE,
+		EXTINT_CALLBACK_TYPE_DETECT);
+	extint_chan_enable_callback(SW_USER_EIC_LINE,
+		EXTINT_CALLBACK_TYPE_DETECT);
+}
+
+void extint_detection_callback(void)
+{
+	timestamp_t t_now;
+	system_interrupt_enter_critical_section();
+	t_now.le.lo = tc_get_count_value(&tc_instance);
+	t_now.le.hi = g_us_timestamp_upper_32bit;
+	system_interrupt_leave_critical_section();
+	
+	// if it's been less than 25 ms, ignore it
+	if ((t_now.val - last_button_timestamp.val) < 25000)
+	{
+		return;
+	}
+	else
+	{
+		if (port_pin_get_input_level(SW_USER_EIC_PIN) == false)
+		{
+			if (display_screen >= (MAX_SCREENS - 1))
+			{
+				display_screen = 0;
+			}
+			else
+			{
+				display_screen++;
+			}
+		}
+	}
 }
 
 void display_set_pixel(UG_S16 x, UG_S16 y, UG_COLOR color)
@@ -318,11 +340,11 @@ void display_set_pixel(UG_S16 x, UG_S16 y, UG_COLOR color)
 	
 	if (color)
 	{
-		display_buffer[((x*DISP_SIZE_X)>>4) + (y>>3)] |= (1<<(y%8));
+		display_buffer[display_screen][((x*DISP_SIZE_X)>>4) + (y>>3)] |= (1<<(y%8));
 	}
 	else
 	{
-		display_buffer[((x*DISP_SIZE_X)>>4) + (y>>3)] &= ~(1<<(y%8));
+		display_buffer[display_screen][((x*DISP_SIZE_X)>>4) + (y>>3)] &= ~(1<<(y%8));
 	}
 }
 
@@ -424,5 +446,5 @@ void measure_nonPD_current(void)
 		sprintf(str, "Unknown Error");
 	}
 	UG_PutString(0, 16, str);
-	ssd1306_write_data_n(display_buffer, DISP_MEM_SIZE);
+	ssd1306_write_data_n(display_buffer[display_screen], DISP_MEM_SIZE);
 }

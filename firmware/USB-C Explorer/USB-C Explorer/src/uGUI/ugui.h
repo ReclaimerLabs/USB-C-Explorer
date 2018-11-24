@@ -33,6 +33,11 @@
 #ifndef __UGUI_H
 #define __UGUI_H
 
+#define MAX_SCREENS 2
+enum screen_assignment {
+	SCREEN_POWER = 0,
+	SCREEN_ALTMODE,
+};
 
 /* -------------------------------------------------------------------------------- */
 /* -- CONFIG SECTION                                                             -- */
