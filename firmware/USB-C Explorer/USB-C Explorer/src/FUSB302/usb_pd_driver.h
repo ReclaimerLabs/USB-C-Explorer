@@ -23,6 +23,7 @@
 //#define CONFIG_USB_PD_GIVE_BACK
 //#define CONFIG_USB_PD_SIMPLE_DFP
 //#define CONFIG_USB_PD_TCPM_TCPCI
+#define PD_PREFER_HIGH_VOLTAGE
 
 /* Default pull-up value on the USB-C ports when they are used as source. */
 #define CONFIG_USB_PD_PULLUP TYPEC_RP_USB
@@ -33,6 +34,10 @@
 /* Don't automatically change roles */
 #undef CONFIG_USB_PD_INITIAL_DRP_STATE
 #define CONFIG_USB_PD_INITIAL_DRP_STATE PD_DRP_FREEZE
+
+/* Prefer higher voltage, and more importantly, lower current */
+#define PD_PREFER_HIGH_VOLTAGE
+//#define PD_PREFER_LOW_VOLTAGE
 
 /* board specific type-C power constants */
 /*
