@@ -10,6 +10,7 @@
 #include "usb_pd_tcpm.h"
 #include "tcpm.h"
 #include "usb_pd.h"
+#include <delay.h>
 
 #define PACKET_IS_GOOD_CRC(head) (PD_HEADER_TYPE(head) == PD_CTRL_GOOD_CRC && \
 				 PD_HEADER_CNT(head) == 0)
@@ -441,6 +442,8 @@ static int fusb302_tcpm_init(int port)
 	tcpm_set_polarity(port, 0);
 	tcpm_set_vconn(port, 0);
 
+	fusb302_auto_goodcrc_enable(port, 1);
+
 	/* Turn on the power! */
 	/* TODO: Reduce power consumption */
 	tcpc_write(port, TCPC_REG_POWER, TCPC_REG_POWER_PWR_ALL);
@@ -839,7 +842,11 @@ static int fusb302_tcpm_transmit(int port, enum tcpm_transmit_type type,
 		buf[buf_pos++] = fusb302_TKN_SYNC1;
 		buf[buf_pos++] = fusb302_TKN_SYNC2;
 
-		return fusb302_send_message(port, header, data, buf, buf_pos);
+		fusb302_send_message(port, header, data, buf, buf_pos);
+		// wait for the GoodCRC to come back before we let the rest
+		// of the code do stuff like change polarity and miss it
+		delay_us(600);
+		return;
 	case TCPC_TX_HARD_RESET:
 		i2c_master_lock(tcpc_config[port].i2c_host_port);
 		/* Simply hit the SEND_HARD_RESET bit */

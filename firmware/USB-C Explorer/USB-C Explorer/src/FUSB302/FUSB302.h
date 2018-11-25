@@ -133,7 +133,7 @@
 #define TCPC_REG_STATUS0A_RETRYFAIL (1<<4)
 #define TCPC_REG_STATUS0A_POWER     (1<<2) /* two-bit field */
 #define TCPC_REG_STATUS0A_RX_SOFT_RESET (1<<1)
-#define TCPC_REG_STATUS0A_RX_HARD_RESEt (1<<0)
+#define TCPC_REG_STATUS0A_RX_HARD_RESET (1<<0)
 
 #define TCPC_REG_STATUS1A   0x3D
 /* three-bit field, valid values below */

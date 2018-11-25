@@ -1569,11 +1569,11 @@ static void handle_request(int port, uint16_t head,
 	}
 
 	/*
-	 * If we are in disconnected state, we shouldn't get a request. Do
-	 * a hard reset if we get one.
+	 * If we are in disconnected state, we shouldn't get a request. 
+	 * Ignore it if we get one.
 	 */
 	if (!pd_is_connected(port))
-		set_state(port, PD_STATE_HARD_RESET_SEND);
+		return;
 
 #ifdef CONFIG_USB_PD_REV30
 	/* Check if this is an extended chunked data message. */
