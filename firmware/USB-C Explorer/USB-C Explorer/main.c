@@ -77,7 +77,7 @@ const struct tcpc_config_t tcpc_config[CONFIG_USB_PD_PORT_COUNT] = {
 };
 // USB-C Specific - TCPM end 1
 
-uint8_t display_screen, display_screen_last, display_needs_update;
+volatile uint8_t display_screen, display_needs_update, display_change_requested;
 uint8_t display_buffer[MAX_SCREENS][DISP_MEM_SIZE];
 UG_GUI gui;
 timestamp_t last_button_timestamp;
@@ -233,11 +233,20 @@ int main(void)
 		
 		pd_run_state_machine(0);
 		
-		if (display_screen != display_screen_last)
+		if (display_change_requested)
 		{
-			ssd1306_write_data_n(display_buffer[display_screen], DISP_MEM_SIZE);
-			display_screen_last = display_screen;
+			if (display_screen >= (MAX_SCREENS - 1))
+			{
+				display_screen = 0;
+			}
+			else
+			{
+				display_screen++;
+			}
+			display_change_requested = 0;
+			display_needs_update = 1;
 		}
+		
 		if (display_needs_update)
 		{
 			ssd1306_write_data_n(display_buffer[display_screen], DISP_MEM_SIZE);
@@ -290,11 +299,10 @@ void display_init(void)
 	sprintf(str, "No Alt Mode");
 	UG_PutString(0, 8, str);
 	display_screen = SCREEN_POWER;
-	display_needs_update = 1;
 	
+	display_needs_update = 1;
 	display_screen = 0;
-	display_screen_last = 0;
-	display_needs_update = 0;
+	display_change_requested = 0;
 	struct extint_chan_conf config_extint_chan;
 	extint_chan_get_config_defaults(&config_extint_chan);
 	config_extint_chan.gpio_pin           = SW_USER_EIC_PIN;
@@ -327,14 +335,7 @@ void extint_detection_callback(void)
 	{
 		if (port_pin_get_input_level(SW_USER_EIC_PIN) == false)
 		{
-			if (display_screen >= (MAX_SCREENS - 1))
-			{
-				display_screen = 0;
-			}
-			else
-			{
-				display_screen++;
-			}
+			display_change_requested = 1;
 		}
 	}
 }
