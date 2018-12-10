@@ -442,8 +442,6 @@ static int fusb302_tcpm_init(int port)
 	tcpm_set_polarity(port, 0);
 	tcpm_set_vconn(port, 0);
 
-	fusb302_auto_goodcrc_enable(port, 1);
-
 	/* Turn on the power! */
 	/* TODO: Reduce power consumption */
 	tcpc_write(port, TCPC_REG_POWER, TCPC_REG_POWER_PWR_ALL);
