@@ -330,6 +330,8 @@ static int svdm_enter_mode(int port, uint32_t *payload)
 	
 	sprintf(str, "Requested Alt Mode");
 	UG_PutString(0, 8, str);
+	sprintf(str, "-DisplayPort");
+	UG_PutString(0, 16, str);
 	
 	display_screen = old_display;
 	display_needs_update = 1;
