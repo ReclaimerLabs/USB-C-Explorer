@@ -17,6 +17,8 @@ extern struct tc_module tc_instance;
 extern uint32_t g_us_timestamp_upper_32bit;
 extern uint8_t display_buffer[MAX_SCREENS][DISP_MEM_SIZE];
 extern uint8_t display_screen, display_needs_update;
+extern int pd_count, pd_count_written;
+extern uint32_t *pd_src_caps;
 
 uint32_t pd_task_set_event(uint32_t event, int wait_for_reply)
 {
@@ -189,6 +191,16 @@ void pd_process_source_cap_callback(int port, int cnt, uint32_t *src_caps)
 	int i;
 	uint32_t ma, mv, pdo;
 	uint8_t old_display;
+	
+	// If we write everything to display at once, 
+	// it will take about 17 ms just to do the pixel math. 
+	// While we do that, we're not servicing the PD state machine. 
+	// The timeout to reply an incoming message is 15 ms. 
+	// Instead, we break the job into lines and only send the first one now. 
+	// Then we service the PD state machine between each line. 
+	pd_count = cnt;
+	pd_src_caps = src_caps;
+	pd_count_written = 0;
 
 	old_display = display_screen;
 	display_screen = SCREEN_POWER;
@@ -196,13 +208,6 @@ void pd_process_source_cap_callback(int port, int cnt, uint32_t *src_caps)
 	
 	sprintf(str, "Has Power Delivery");
 	UG_PutString(0, 8, str);
-	
-	for (i = 0; i < cnt; i++)
-	{
-		pd_extract_pdo_power(src_caps[i], &ma, &mv);
-		sprintf(str, "%5.2f V, %5.2f A", (float)mv/1000, (float)ma/1000);
-		UG_PutString(0, 8*(i+2), str);
-	}
 	
 	display_screen = old_display;
 	display_needs_update = 1;

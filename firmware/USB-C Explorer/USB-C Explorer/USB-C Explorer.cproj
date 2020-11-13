@@ -33,13 +33,15 @@
           <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
           <option id="common.services.usb.class.device" value="Add" config="cdc" content-id="Atmel.ASF" />
           <option id="common2.components.display.ssd1306" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="sam0.drivers.dma" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="sam0.drivers.rtc" value="Add" config="count_callback" content-id="Atmel.ASF" />
           <option id="sam0.drivers.sercom.i2c.master" value="Add" config="polled" content-id="Atmel.ASF" />
           <option id="sam0.drivers.sercom.spi" value="Add" config="callback" content-id="Atmel.ASF" />
           <option id="sam0.drivers.system" value="Add" config="" content-id="Atmel.ASF" />
           <option id="sam0.drivers.system.clock" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="sam0.drivers.tc" value="Add" config="callback" content-id="Atmel.ASF" />
           <option id="qtlib.generic.tmx.qt.at91samd.device" value="Add" config="" content-id="f23f3c19-f15d-491d-bc53-a449fb4910a2" />
           <option id="libsamd21_qtouch_gcc.a" value="Add" config="" content-id="f23f3c19-f15d-491d-bc53-a449fb4910a2" />
-          <option id="sam0.drivers.tc" value="Add" config="callback" content-id="Atmel.ASF" />
           <option id="sam0.utils.linker_scripts" value="Add" config="" content-id="Atmel.ASF" />
         </options>
         <configurations>
@@ -223,11 +225,11 @@
           <file path="src/ASF/sam0/drivers/events/events_hooks.c" framework="" version="3.35.1" source="sam0\drivers\events\events_hooks.c" changed="False" content-id="Atmel.ASF" />
           <file path="src/ASF/sam0/drivers/events/events_common.h" framework="" version="3.35.1" source="sam0\drivers\events\events_common.h" changed="False" content-id="Atmel.ASF" />
           <file path="src/ASF/sam0/drivers/events/events_hooks.h" framework="" version="3.35.1" source="sam0\drivers\events\events_hooks.h" changed="False" content-id="Atmel.ASF" />
-          <file path="src/ASF/sam0/drivers/rtc/rtc_count.h" framework="" version="3.35.1" source="sam0\drivers\rtc\rtc_count.h" changed="False" content-id="Atmel.ASF" />
-          <file path="src/ASF/sam0/drivers/rtc/rtc_count_interrupt.h" framework="" version="3.35.1" source="sam0\drivers\rtc\rtc_count_interrupt.h" changed="False" content-id="Atmel.ASF" />
-          <file path="src/ASF/sam0/drivers/rtc/rtc_tamper.h" framework="" version="3.35.1" source="sam0\drivers\rtc\rtc_tamper.h" changed="False" content-id="Atmel.ASF" />
-          <file path="src/ASF/sam0/drivers/rtc/rtc_sam_d_r_h/rtc_count.c" framework="" version="3.35.1" source="sam0\drivers\rtc\rtc_sam_d_r_h\rtc_count.c" changed="False" content-id="Atmel.ASF" />
-          <file path="src/ASF/sam0/drivers/rtc/rtc_sam_d_r_h/rtc_count_interrupt.c" framework="" version="3.35.1" source="sam0\drivers\rtc\rtc_sam_d_r_h\rtc_count_interrupt.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam0/drivers/rtc/rtc_count.h" framework="" version="3.42.0" source="sam0\drivers\rtc\rtc_count.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam0/drivers/rtc/rtc_count_interrupt.h" framework="" version="3.42.0" source="sam0\drivers\rtc\rtc_count_interrupt.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam0/drivers/rtc/rtc_tamper.h" framework="" version="3.42.0" source="sam0\drivers\rtc\rtc_tamper.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam0/drivers/rtc/rtc_sam_d_r_h/rtc_count.c" framework="" version="3.42.0" source="sam0\drivers\rtc\rtc_sam_d_r_h\rtc_count.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam0/drivers/rtc/rtc_sam_d_r_h/rtc_count_interrupt.c" framework="" version="3.42.0" source="sam0\drivers\rtc\rtc_sam_d_r_h\rtc_count_interrupt.c" changed="False" content-id="Atmel.ASF" />
           <file path="src/QTouch/QDebugTransport.c" framework="" version="5.9" source="thirdparty\qtouch\devspecific\sam\samd\qdebug\QDebugTransport.c" changed="False" content-id="f23f3c19-f15d-491d-bc53-a449fb4910a2" />
           <file path="src/QTouch/BitBangSPI_Master.c" framework="" version="5.9" source="thirdparty\qtouch\devspecific\sam\samd\qdebug\BitBangSPI_Master.c" changed="False" content-id="f23f3c19-f15d-491d-bc53-a449fb4910a2" />
           <file path="src/QTouch/QDebug_samd.c" framework="" version="5.9" source="thirdparty\qtouch\devspecific\sam\samd\qdebug\QDebug_samd.c" changed="False" content-id="f23f3c19-f15d-491d-bc53-a449fb4910a2" />
@@ -295,11 +297,16 @@
           <file path="src/ASF/sam0/drivers/tc/tc_interrupt.h" framework="" version="3.35.1" source="sam0\drivers\tc\tc_interrupt.h" changed="False" content-id="Atmel.ASF" />
           <file path="src/ASF/sam0/drivers/tc/tc.h" framework="" version="3.35.1" source="sam0\drivers\tc\tc.h" changed="False" content-id="Atmel.ASF" />
           <file path="src/ASF/sam0/drivers/tc/tc_sam_d_r_h/tc.c" framework="" version="3.35.1" source="sam0\drivers\tc\tc_sam_d_r_h\tc.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam0/drivers/dma/dma.c" framework="" version="3.42.0" source="sam0\drivers\dma\dma.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam0/drivers/dma/dma_crc.h" framework="" version="3.42.0" source="sam0\drivers\dma\dma_crc.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam0/drivers/dma/quick_start/qs_dma_basic.h" framework="" version="3.42.0" source="sam0\drivers\dma\quick_start\qs_dma_basic.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam0/drivers/dma/dma.h" framework="" version="3.42.0" source="sam0\drivers\dma\dma.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/Config/conf_dma.h" framework="" version="3.42.0" source="sam0\drivers\dma\module_config\conf_dma.h" changed="False" content-id="Atmel.ASF" />
         </files>
         <documentation help="http://asf.atmel.com/docs/3.30.1/common.applications.user_application.sam0_system.user_board.atsamd21e17a/html/index.html" />
         <offline-documentation help="" />
         <dependencies>
-          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.35.1" />
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.42.0" />
           <content-extension eid="f23f3c19-f15d-491d-bc53-a449fb4910a2" uuidref="f23f3c19-f15d-491d-bc53-a449fb4910a2" version="5.9" />
         </dependencies>
         <project id="common.applications.user_application.sam0_system.user_board.atsamd21e17a" value="Add" config="" content-id="Atmel.ASF" />
@@ -404,9 +411,10 @@
       <Value>../src/FUSB302</Value>
       <Value>../src/USBC_PD</Value>
       <Value>../src/USBC_TCPM</Value>
+      <Value>../src/ASF/sam0/drivers/dma</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
-  <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>
+  <armgcc.compiler.optimization.level>Optimize most (-O3)</armgcc.compiler.optimization.level>
   <armgcc.compiler.optimization.OtherFlags>-fdata-sections</armgcc.compiler.optimization.OtherFlags>
   <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
   <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
@@ -483,6 +491,7 @@
       <Value>../src/ASF/sam0/drivers/sercom/i2c/i2c_sam0</Value>
       <Value>../src/ASF/sam0/drivers/tc</Value>
       <Value>../src/ASF/sam0/drivers/tc/tc_sam_d_r_h</Value>
+      <Value>../src/ASF/sam0/drivers/dma</Value>
     </ListValues>
   </armgcc.assembler.general.IncludePaths>
   <armgcc.preprocessingassembler.general.AssemblerFlags>-DARM_MATH_CM0PLUS=true -DBOARD=USER_BOARD -DSYSTICK_MODE -DEVENTS_INTERRUPT_HOOKS_MODE=true -DRTC_COUNT_ASYNC=true -DUSB_DEVICE_LPM_SUPPORT -DUDD_ENABLE -DEXTINT_CALLBACK_MODE=true -DSPI_CALLBACK_MODE=true -DI2C_MASTER_CALLBACK_MODE=false -DTC_ASYNC=true</armgcc.preprocessingassembler.general.AssemblerFlags>
@@ -536,6 +545,7 @@
       <Value>../src/ASF/sam0/drivers/sercom/i2c/i2c_sam0</Value>
       <Value>../src/ASF/sam0/drivers/tc</Value>
       <Value>../src/ASF/sam0/drivers/tc/tc_sam_d_r_h</Value>
+      <Value>../src/ASF/sam0/drivers/dma</Value>
     </ListValues>
   </armgcc.preprocessingassembler.general.IncludePaths>
 </ArmGcc>
@@ -620,6 +630,7 @@
       <Value>../src/USBC_TCPM</Value>
       <Value>../src/ASF/sam0/drivers/tc</Value>
       <Value>../src/ASF/sam0/drivers/tc/tc_sam_d_r_h</Value>
+      <Value>../src/ASF/sam0/drivers/dma</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize debugging experience (-Og)</armgcc.compiler.optimization.level>
@@ -695,6 +706,7 @@
       <Value>../src/ASF/sam0/drivers/sercom/i2c/i2c_sam0</Value>
       <Value>../src/ASF/sam0/drivers/tc</Value>
       <Value>../src/ASF/sam0/drivers/tc/tc_sam_d_r_h</Value>
+      <Value>../src/ASF/sam0/drivers/dma</Value>
     </ListValues>
   </armgcc.assembler.general.IncludePaths>
   <armgcc.assembler.debugging.DebugLevel>Default (-g)</armgcc.assembler.debugging.DebugLevel>
@@ -749,6 +761,7 @@
       <Value>../src/ASF/sam0/drivers/sercom/i2c/i2c_sam0</Value>
       <Value>../src/ASF/sam0/drivers/tc</Value>
       <Value>../src/ASF/sam0/drivers/tc/tc_sam_d_r_h</Value>
+      <Value>../src/ASF/sam0/drivers/dma</Value>
     </ListValues>
   </armgcc.preprocessingassembler.general.IncludePaths>
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
@@ -765,7 +778,7 @@
       <SubType>compile</SubType>
     </None>
     <None Include="USB-C Explorer.qtdgn">
-      <SubType>none</SubType>
+      <SubType>compile</SubType>
       <Generator>QTouchFileGenerator</Generator>
     </None>
     <None Include="src\ASF\sam0\utils\linker_scripts\samd21\gcc\samd21e17a_flash.ld">
@@ -855,6 +868,18 @@
       <SubType>compile</SubType>
     </None>
     <None Include="src\ASF\sam0\drivers\extint\extint.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\sam0\drivers\dma\dma.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\sam0\drivers\dma\dma_crc.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\sam0\drivers\dma\quick_start\qs_dma_basic.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\sam0\drivers\dma\dma.h">
       <SubType>compile</SubType>
     </None>
     <Compile Include="src\ASF\sam0\drivers\extint\extint_callback.c">
@@ -969,6 +994,9 @@
       <SubType>compile</SubType>
     </None>
     <None Include="src\config\conf_spi.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\config\conf_dma.h">
       <SubType>compile</SubType>
     </None>
     <Compile Include="src\FUSB302\FUSB302.c">
@@ -1575,6 +1603,8 @@
     <Folder Include="src\ASF\common\utils\interrupt\" />
     <Folder Include="src\ASF\sam0\" />
     <Folder Include="src\ASF\sam0\drivers\" />
+    <Folder Include="src\ASF\sam0\drivers\dma\" />
+    <Folder Include="src\ASF\sam0\drivers\dma\quick_start\" />
     <Folder Include="src\ASF\sam0\drivers\events\" />
     <Folder Include="src\ASF\sam0\drivers\events\events_sam_d_r_h\" />
     <Folder Include="src\ASF\sam0\drivers\extint\" />

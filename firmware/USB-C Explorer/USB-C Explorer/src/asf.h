@@ -59,14 +59,12 @@
 // From module: Common build items for user board support templates
 #include <user_board.h>
 
+// From module: DMAC - Direct Memory Access Controller
+#include <dma.h>
+#include <dma_crc.h>
+
 // From module: Delay routines
 #include <delay.h>
-
-// From module: EVSYS - Event System Common
-#include <events.h>
-
-// From module: EVSYS - Event System with interupt hooks support
-#include <events_hooks.h>
 
 // From module: EXTINT - External Interrupt (Callback APIs)
 #include <extint.h>
@@ -91,13 +89,6 @@
 #include <rtc_count.h>
 #include <rtc_count_interrupt.h>
 #include <rtc_tamper.h>
-
-// From module: SAM D21 - Self capacitance method
-#include <BitBangSPI_Master.h>
-#include <QDebugSettings.h>
-#include <QDebugTransport.h>
-#include <QDebug_samd.h>
-#include <touch_api_ptc.h>
 
 // From module: SAM D21/R21/D11/L21/DA1/L22 USB Dual role interface
 #include <usb_dual.h>
@@ -124,10 +115,6 @@
 #include <clock.h>
 #include <gclk.h>
 
-// From module: SYSTEM - Clock Management for SAMD21/R21/DAx
-#include <clock.h>
-#include <gclk.h>
-
 // From module: SYSTEM - Core System Driver
 #include <system.h>
 
@@ -140,13 +127,7 @@
 // From module: SYSTEM - Power Management for SAM D20/D21/R21/D09/D10/D11/DA/HA
 #include <power.h>
 
-// From module: SYSTEM - Power Management for SAM D20/D21/R21/D09/D10/D11/DA0/DA1
-#include <power.h>
-
 // From module: SYSTEM - Reset Management for SAM D20/D21/R21/D09/D10/D11/DA/HA
-#include <reset.h>
-
-// From module: SYSTEM - Reset Management for SAM D20/D21/R21/D09/D10/D11/DA0/DA1
 #include <reset.h>
 
 // From module: Sleep manager - SAMD implementation

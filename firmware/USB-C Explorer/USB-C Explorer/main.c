@@ -52,6 +52,9 @@
  * Atmel Software Framework (ASF).
  */
 #include <asf.h>
+// This should be included in asf.h, 
+// but something went wrong moving to Microchip Studio
+#include "touch_api_ptc.h"
 #include "ugui.h"
 #include "tcpm_driver.h"
 #include "usb_pd_driver.h"
@@ -75,6 +78,9 @@ uint32_t device_rev = 0;
 const struct tcpc_config_t tcpc_config[CONFIG_USB_PD_PORT_COUNT] = {
 	{&i2c_master_instance, fusb302_I2C_SLAVE_ADDR, &fusb302_tcpm_drv},
 };
+
+int pd_count=0, pd_count_written=0;
+uint32_t *pd_src_caps;
 // USB-C Specific - TCPM end 1
 
 volatile uint8_t display_screen, display_needs_update, display_change_requested;
@@ -231,8 +237,6 @@ int main(void)
 			tcpc_alert(0);
 		}
 		
-		pd_run_state_machine(0);
-		
 		if (display_change_requested)
 		{
 			if (display_screen >= (MAX_SCREENS - 1))
@@ -252,8 +256,24 @@ int main(void)
 			ssd1306_write_data_n(display_buffer[display_screen], DISP_MEM_SIZE);
 			display_needs_update = 0;
 		}
+
+		// This is set so as not to needlessly spam the I2C bus
+		delay_us(1000);
 		
-		delay_ms(2);
+		// See the notes in pd_process_source_cap_callback()
+		if (pd_count_written < pd_count)
+		{
+			char str[256];
+			uint32_t ma, mv, pdo;
+			
+			pd_extract_pdo_power(pd_src_caps[pd_count_written], &ma, &mv);
+			sprintf(str, "%5.2f V, %5.2f A", (float)mv/1000, (float)ma/1000);
+			UG_PutString(0, 8*(pd_count_written+2), str);
+			pd_count_written++;
+			display_needs_update = 1;
+		}
+		
+		pd_run_state_machine(0);
 	}
 }
 
@@ -362,7 +382,7 @@ void i2c_init(void)
 	struct i2c_master_config config_i2c_master;
 	i2c_master_get_config_defaults(&config_i2c_master);
 	config_i2c_master.buffer_timeout = 10000;
-	config_i2c_master.baud_rate = I2C_MASTER_BAUD_RATE_400KHZ;
+	config_i2c_master.baud_rate = I2C_MASTER_BAUD_RATE_1000KHZ;
 	config_i2c_master.pinmux_pad0 = I2C_SDA_PINMUX;
 	config_i2c_master.pinmux_pad1 = I2C_SCL_PINMUX;
 	i2c_master_init(&i2c_master_instance, I2C_MODULE, &config_i2c_master);

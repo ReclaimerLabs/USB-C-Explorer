@@ -163,6 +163,8 @@ void ssd1306_write_data(uint8_t data);
 
 void ssd1306_write_data_n(uint8_t *data, uint16_t size);
 
+//static void ssd1306_write_data_callback(struct dma_resource* const resource);
+
 /**
  * \brief Read data from the controller
  *

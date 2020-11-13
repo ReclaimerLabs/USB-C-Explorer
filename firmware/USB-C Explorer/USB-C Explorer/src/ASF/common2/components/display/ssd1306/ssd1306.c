@@ -44,9 +44,18 @@
  * Support and FAQ: visit <a href="http://www.atmel.com/design-support/">Atmel Support</a>
  */
 #include "ssd1306.h"
+#include <asf.h>
 
 struct spi_module ssd1306_master;
 struct spi_slave_inst ssd1306_slave;
+struct dma_resource ssd1306_dma_resource_tx;
+COMPILER_ALIGNED(16)
+DmacDescriptor dma_descriptor_tx SECTION_DMAC_DESCRIPTOR;
+
+static void ssd1306_write_data_callback(struct dma_resource* const resource)
+{
+	spi_select_slave(&ssd1306_master, &ssd1306_slave, false);
+}
 
 /**
  * \internal
@@ -75,6 +84,12 @@ static void ssd1306_interface_init(void)
 
 	spi_init(&ssd1306_master, SSD1306_SPI, &config);
 	spi_enable(&ssd1306_master);
+	
+	struct dma_resource_config tx_config;
+	dma_get_config_defaults(&tx_config);
+	tx_config.peripheral_trigger = CONF_PERIPHERAL_TRIGGER_TX;
+	tx_config.trigger_action = DMA_TRIGGER_ACTION_BEAT;
+	dma_allocate(&ssd1306_dma_resource_tx, &tx_config);
 
 	struct port_config pin;
 	port_get_config_defaults(&pin);
@@ -185,9 +200,27 @@ void ssd1306_write_data(uint8_t data)
 }
 
 void ssd1306_write_data_n(uint8_t *data, uint16_t size)
-{
+{	
 	spi_select_slave(&ssd1306_master, &ssd1306_slave, true);
 	port_pin_set_output_level(SSD1306_DC_PIN, true);
-	spi_write_buffer_wait(&ssd1306_master, data, size);
-	spi_select_slave(&ssd1306_master, &ssd1306_slave, false);
+	
+	//spi_write_buffer_wait(&ssd1306_master, data, size);
+	//spi_write_buffer_job(&ssd1306_master, data, size);
+	//spi_select_slave(&ssd1306_master, &ssd1306_slave, false);
+	
+	struct dma_descriptor_config tx_descriptor_config;
+	dma_descriptor_get_config_defaults(&tx_descriptor_config);
+	tx_descriptor_config.beat_size = DMA_BEAT_SIZE_BYTE;
+	tx_descriptor_config.dst_increment_enable = false;
+	tx_descriptor_config.block_transfer_count = size;
+	tx_descriptor_config.source_address = (uint32_t)data + (uint32_t)size;
+	tx_descriptor_config.destination_address = (uint32_t)(&ssd1306_master.hw->SPI.DATA.reg);
+	dma_descriptor_create(&dma_descriptor_tx, &tx_descriptor_config);
+	
+	dma_add_descriptor(&ssd1306_dma_resource_tx, &dma_descriptor_tx);
+	
+	dma_register_callback(&ssd1306_dma_resource_tx, ssd1306_write_data_callback, DMA_CALLBACK_TRANSFER_DONE);
+	dma_enable_callback(&ssd1306_dma_resource_tx, DMA_CALLBACK_TRANSFER_DONE);
+	
+	dma_start_transfer_job(&ssd1306_dma_resource_tx);
 }

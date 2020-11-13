@@ -816,7 +816,7 @@ static int fusb302_tcpm_transmit(int port, enum tcpm_transmit_type type,
 	 * 1: "Insert CRC" Token
 	 * 1: EOP Token
 	 * 1: "Turn transmitter off" token
-	 * 1: "Star Transmission" Command
+	 * 1: "Start Transmission" Command
 	 * -
 	 * 40: 40 bytes worst-case
 	 */
@@ -844,7 +844,7 @@ static int fusb302_tcpm_transmit(int port, enum tcpm_transmit_type type,
 		// wait for the GoodCRC to come back before we let the rest
 		// of the code do stuff like change polarity and miss it
 		delay_us(600);
-		return;
+		return 0;
 	case TCPC_TX_HARD_RESET:
 		i2c_master_lock(tcpc_config[port].i2c_host_port);
 		/* Simply hit the SEND_HARD_RESET bit */

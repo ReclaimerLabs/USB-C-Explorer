@@ -1126,6 +1126,10 @@ static void handle_data_request(int port, uint16_t head,
 			pd_process_source_cap(port, cnt, payload);
 
 			/* Source will resend source cap on failure */
+			// If this delay is not present, 
+			// the FUSB302B will NAK during a write
+			// This value seems to work best empirically. 
+			delay_us(1200);
 			pd_send_request_msg(port, 1);
 			
 			// We call the callback after we send the request
@@ -2225,7 +2229,8 @@ void pd_run_state_machine(int port)
 
 	/* process any potential incoming message */
 	incoming_packet = evt & PD_EVENT_RX;
-	//if (incoming_packet) {
+	//if (!ioport_get_pin_level(USBC_INT_PIN)) {
+	//	tcpc_alert(port);
 		if (!tcpm_get_message(port, payload, &head))
 			handle_request(port, head, payload);
 	//}
@@ -2849,7 +2854,11 @@ void pd_run_state_machine(int port)
 			if (new_cc_state == PD_CC_DEBUG_ACC)
 				pd[port].flags |=
 					PD_FLAGS_TS_DTS_PARTNER;
-			send_control(port, PD_CTRL_GET_SOURCE_CAP);
+			// We don't want to send a Get_Source_Cap, 
+			// but instead wait for the Source_Cap messages
+			// the Source sends anyway. 
+			// This works because we are a bus-powered Sink
+			//send_control(port, PD_CTRL_GET_SOURCE_CAP);
 			set_state(port, PD_STATE_SNK_DISCOVERY);
 			timeout = 10*MSEC;
 			//hook_call_deferred(
@@ -2964,26 +2973,6 @@ void pd_run_state_machine(int port)
 
 #if defined(CONFIG_CHARGE_MANAGER)
 		timeout = PD_T_SINK_ADJ - PD_T_DEBOUNCE;
-
-		/* Check if CC pull-up has changed */
-		tcpm_get_cc(port, &cc1, &cc2);
-		if (typec_curr != get_typec_current_limit(
-					pd[port].polarity, cc1, cc2)) {
-			/* debounce signal by requiring two reads */
-			if (typec_curr_change) {
-				/* set new input current limit */
-				typec_curr = get_typec_current_limit(
-					pd[port].polarity, cc1, cc2);
-				//typec_set_input_current_limit(
-				//	port, typec_curr, TYPE_C_VOLTAGE);
-			} else {
-				/* delay for debounce */
-				timeout = PD_T_DEBOUNCE;
-			}
-			typec_curr_change = !typec_curr_change;
-		} else {
-			typec_curr_change = 0;
-		}
 #endif
 		break;
 	case PD_STATE_SNK_REQUESTED:
